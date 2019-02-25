@@ -32,4 +32,5 @@ application-dev.properties
 src/main/resources/static/css/
 src/main/resources/static/favicon.ico
 src/main/resources/static/js/
+src/main/resources/static/static/
 src/main/resources/templates/index.html
