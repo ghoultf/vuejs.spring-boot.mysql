@@ -9,3 +9,9 @@ export default {
   name: 'LoginPage'
 }
 </script>
+
+<style lang="scss">
+html {
+  font-size: 14px;
+}
+</style>
