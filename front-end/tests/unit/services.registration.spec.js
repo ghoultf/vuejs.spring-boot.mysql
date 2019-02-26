@@ -29,13 +29,13 @@ describe('services/registration', () => {
     moxios.wait(() => {
       let request = moxios.requests.mostRecent()
       expect(request).toBeTruthy()
-      request.respondWith({
+      request.reject({
         status: 400,
-        response: { result: 'Bad request' }
+        response: { message: 'Bad request' }
       })
     })
-    return registrationService.register().then(data => {
-      expect(data.result).toEqual('Bad request')
-    })
+  })
+  return registrationService.register().catch(data => {
+    expect(data.result).toEqual('Bad request')
   })
 })
