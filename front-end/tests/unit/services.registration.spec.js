@@ -10,7 +10,7 @@ describe('services/registration', () => {
     moxios.uninstall()
   })
 
-  it('should pass the response to caller when request succeed', () => {
+  it('should pass the response to caller when request succeeded', () => {
     expect.assertions(2)
     moxios.wait(() => {
       let request = moxios.requests.mostRecent()
@@ -26,6 +26,7 @@ describe('services/registration', () => {
   })
 
   it('should propagate the error to caller when request failed', () => {
+    expect.assertions(2)
     moxios.wait(() => {
       let request = moxios.requests.mostRecent()
       expect(request).toBeTruthy()
@@ -34,8 +35,8 @@ describe('services/registration', () => {
         response: { message: 'Bad request' }
       })
     })
-  })
-  return registrationService.register().catch(data => {
-    expect(data.result).toEqual('Bad request')
+    return registrationService.register().catch(error => {
+      expect(error.response.message).toEqual('Bad request')
+    })
   })
 })
