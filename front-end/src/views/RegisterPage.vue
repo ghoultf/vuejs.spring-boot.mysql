@@ -21,20 +21,18 @@
             <input type="password" class="form-control" id="password" v-model="form.password">
           </div>
           <button type="submit" class="btn btn-primary btn-block">Create account</button>
-          <p class="accept-terms text-muted">
-            By clicking “Create account”, you agree to our
+          <p class="accept-terms text-muted">By clicking “Create account”, you agree to our
             <a href="#">terms of service</a> and
             <a href="#">privacy policy</a>.
           </p>
-          <p class="text-center text-muted">
-            Already have an account?
+          <p class="text-center text-muted">Already have an account?
             <a href="/login">Sign in</a>
           </p>
         </form>
       </div>
     </div>
     <footer class="footer">
-      <span class="copyright">&copy; 2019 TaskAgile.com</span>
+      <span class="copyright">&copy; 2018 TaskAgile.com</span>
       <ul class="footer-links list-inline float-right">
         <li class="list-inline-item">
           <a href="#">About</a>
@@ -46,7 +44,7 @@
           <a href="#">Privacy Policy</a>
         </li>
         <li class="list-inline-item">
-          <a href="https://github.com/ghoultf/vuejs.spring-boot.mysql" target="_blank">GitHub</a>
+          <a href="https://github.com/taskagile/vuejs.spring-boot.mysql" target="_blank">GitHub</a>
         </li>
       </ul>
     </footer>
@@ -54,7 +52,7 @@
 </template>
 
 <script>
-import registrationService from "@/services/registration"
+import registrationService from '@/services/registration'
 
 export default {
   name: 'RegisterPage',
@@ -64,16 +62,16 @@ export default {
         username: '',
         emailAddress: '',
         password: ''
-      }
+      },
+      errorMessage: ''
     }
   },
   methods: {
     submitForm () {
-      // TODO: Validate the data
       registrationService.register(this.form).then(() => {
         this.$router.push({ name: 'LoginPage' })
       }).catch((error) => {
-        this.errorMessage = 'Fail to register user. Reason: ' + (error.message ? error.message : 'Unknown') + '.'
+        this.errorMessage = 'Failed to register user. ' + error.message
       })
     }
   }
@@ -84,31 +82,38 @@ export default {
 .container {
   max-width: 900px;
 }
+
 .register-form {
   margin-top: 50px;
   max-width: 320px;
 }
+
 .logo-wrapper {
   text-align: center;
   margin-bottom: 40px;
+
   .tagline {
     line-height: 180%;
     color: #666;
   }
+
   .logo {
     max-width: 150px;
     margin: 0 auto;
   }
 }
+
 .register-form {
   .form-group label {
     font-weight: bold;
     color: #555;
   }
+
   .accept-terms {
     margin: 20px 0 40px 0;
   }
 }
+
 .footer {
   width: 100%;
   font-size: 13px;
@@ -116,9 +121,11 @@ export default {
   line-height: 40px;
   border-top: 1px solid #ddd;
   margin-top: 50px;
+
   .list-inline-item {
     margin-right: 10px;
   }
+
   a {
     color: #666;
   }

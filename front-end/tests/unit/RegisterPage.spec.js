@@ -8,7 +8,7 @@ const localVue = createLocalVue()
 localVue.use(VueRouter)
 const router = new VueRouter()
 
-// Mock dependency registrationService
+// Mock dependency registratioService
 jest.mock('@/services/registration')
 
 describe('RegisterPage.vue', () => {
@@ -54,6 +54,7 @@ describe('RegisterPage.vue', () => {
     const username = 'sunny'
     const emailAddress = 'sunny@local'
     const password = 'VueJsRocks!'
+
     wrapper.vm.form.username = username
     wrapper.vm.form.emailAddress = emailAddress
     wrapper.vm.form.password = password
