@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import registerationService from "@/services/registration"
+import registrationService from "@/services/registration"
 
 export default {
   name: 'RegisterPage',
@@ -70,7 +70,7 @@ export default {
   methods: {
     submitForm () {
       // TODO: Validate the data
-      registerationService.register(this.form).then(() => {
+      registrationService.register(this.form).then(() => {
         this.$router.push({ name: 'LoginPage' })
       }).catch((error) => {
         this.errorMessage = 'Fail to register user. Reason: ' + (error.message ? error.message : 'Unknown') + '.'
