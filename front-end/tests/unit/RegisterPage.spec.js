@@ -8,7 +8,7 @@ const localVue = createLocalVue()
 localVue.use(VueRouter)
 const router = new VueRouter()
 
-// Mock dependency registerationService
+// Mock dependency registrationService
 jest.mock('@/services/registration')
 
 describe('RegisterPage.vue', () => {
