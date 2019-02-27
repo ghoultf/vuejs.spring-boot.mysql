@@ -1,28 +1,31 @@
 package com.taskagile.app.web.apis;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.taskagile.app.config.SecurityConfiguration;
 import com.taskagile.app.domain.application.UserService;
 import com.taskagile.app.domain.model.user.EmailAddressExistsException;
 import com.taskagile.app.domain.model.user.UsernameExistsException;
 import com.taskagile.app.utils.JsonUtils;
 import com.taskagile.app.web.payload.RegistrationPayload;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+
 @RunWith(SpringRunner.class)
-@WebMvcTest(RegistrationApiController.class)
+@ContextConfiguration(classes = { SecurityConfiguration.class, RegistrationApiController.class })
+@WebMvcTest()
 public class RegistrationApiControllerTests {
 
   @Autowired
