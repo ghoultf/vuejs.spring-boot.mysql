@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
+  <div class="container public">
     <div class="row justify-content-center">
-      <div class="register-form">
+      <div class="form">
         <Logo/>
         <form @submit.prevent="submitForm">
           <div v-show="errorMessage" class="alert alert-danger failed">{{ errorMessage }}</div>
@@ -110,23 +110,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  max-width: 900px;
-}
-
-.register-form {
-  margin-top: 50px;
-  max-width: 320px;
-}
-
-.register-form {
-  .form-group label {
-    font-weight: bold;
-    color: #555;
-  }
-
-  .accept-terms {
-    margin: 20px 0 40px 0;
-  }
+.accept-terms {
+  margin: 20px 0 40px 0;
 }
 </style>

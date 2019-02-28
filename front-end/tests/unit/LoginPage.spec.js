@@ -1,20 +1,19 @@
 import { mount, createLocalVue } from '@vue/test-utils'
-import VueRouter from 'vue-router'
 import Vuelidate from 'vuelidate'
+import VueRouter from 'vue-router'
 import LoginPage from '@/views/LoginPage'
 import authenticationService from '@/services/authentication'
 
-// Adding Vue Router to the test so that
-// we can access vm.$router
+// Setup local Vue with Vuelidate
 const localVue = createLocalVue()
-localVue.use(VueRouter)
 localVue.use(Vuelidate)
+localVue.use(VueRouter)
 const router = new VueRouter()
 
 // Mock dependency registratioService
 jest.mock('@/services/authentication')
 
-describe('should render correct contents', () => {
+describe('LoginPage.vue', () => {
   let wrapper
   let fieldUsername
   let fieldPassword

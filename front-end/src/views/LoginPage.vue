@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
+  <div class="container public">
     <div class="row justify-content-center">
-      <div class="register-form">
+      <div class="form">
         <Logo/>
         <form @submit.prevent="submitForm">
           <div v-show="errorMessage" class="alert alert-danger failed">{{ errorMessage }}</div>
@@ -14,7 +14,7 @@
           </div>
           <div class="form-group">
             <label for="password">Password</label>
-            <input type="text" class="form-control" id="password" v-model="form.password">
+            <input type="password" class="form-control" id="password" v-model="form.password">
             <div class="field-error" v-if="$v.form.password.$dirty">
               <div class="error" v-if="!$v.form.password.required">Password is required</div>
             </div>
@@ -85,23 +85,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  max-width: 900px;
-}
-
-.register-form {
-  margin-top: 50px;
-  max-width: 320px;
-}
-
-.register-form {
-  .form-group label {
-    font-weight: bold;
-    color: #555;
-  }
-  .links {
-    margin: 30px 0 50px 0;
-    text-align: center;
-  }
+.links {
+  margin: 30px 0 50px 0;
+  text-align: center;
 }
 </style>
