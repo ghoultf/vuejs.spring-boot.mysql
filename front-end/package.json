@@ -12,10 +12,15 @@
     "test": "npm run test:unit && npm run test:e2e"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.15",
+    "@fortawesome/free-solid-svg-icons": "^5.7.2",
+    "@fortawesome/vue-fontawesome": "^0.1.5",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
+    "i": "^0.3.6",
     "jquery": "^3.3.1",
     "lodash": "^4.17.11",
+    "npm": "^6.8.0",
     "popper.js": "^1.14.7",
     "vue": "^2.6.6",
     "vue-router": "^3.0.1",
