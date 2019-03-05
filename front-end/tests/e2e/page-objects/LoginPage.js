@@ -12,7 +12,10 @@ module.exports = {
   },
   commands: [{
     login: function (username, password) {
-      this.setValue('@usernameInput', username).setValue('@passwordInput', password).click('@submitButton')
+      this
+        .setValue('@usernameInput', username)
+        .setValue('@passwordInput', password)
+        .click('@submitButton')
     }
   }]
 }

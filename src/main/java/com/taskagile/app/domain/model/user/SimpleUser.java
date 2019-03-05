@@ -20,7 +20,7 @@ public class SimpleUser implements UserDetails, Serializable {
   public SimpleUser(User user) {
     this.userId = user.getId();
     this.username = user.getUsername();
-    this.password = user.getFirstName();
+    this.password = user.getPassword();
   }
 
   public long getUserId() {
@@ -63,15 +63,13 @@ public class SimpleUser implements UserDetails, Serializable {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o)
       return true;
-    }
-    if (!(obj instanceof SimpleUser)) {
+    if (!(o instanceof SimpleUser))
       return false;
-    }
-    SimpleUser that = (SimpleUser) obj;
-    return Objects.equals(this, that);
+    SimpleUser that = (SimpleUser) o;
+    return Objects.equals(username, that.username);
   }
 
   @Override
@@ -81,6 +79,7 @@ public class SimpleUser implements UserDetails, Serializable {
 
   @Override
   public String toString() {
-    return "SimpleUser{userId=" + userId + ", username='" + username + "', password='" + password + "'}";
+    return "SimpleUser{" + "userId=" + userId + ", username='" + username + '\'' + ", password='" + password + '\''
+        + '}';
   }
 }

@@ -26,8 +26,12 @@ module.exports = {
     }
   },
   commands: [{
-    register: function (username, password, emailAddress) {
-      this.setValue('@usernameInput', username).setValue('@emailAddressInput', emailAddress).setValue('@passwordInput', password).click('@submitButton')
+    register: function (username, emailAddress, password) {
+      this
+        .setValue('@usernameInput', username)
+        .setValue('@emailAddressInput', emailAddress)
+        .setValue('@passwordInput', password)
+        .click('@submitButton')
     }
   }]
 }
