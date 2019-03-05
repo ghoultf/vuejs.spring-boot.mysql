@@ -23,7 +23,7 @@ public class SimpleAuthenticationFailureHandler implements AuthenticationFailure
     response.setStatus(HttpStatus.BAD_REQUEST.value());
     ApiResult failure;
     if (exception instanceof BadCredentialsException) {
-      failure = ApiResult.message("Invalid crendentials");
+      failure = ApiResult.message("Invalid credentials");
     } else if (exception instanceof InsufficientAuthenticationException) {
       failure = ApiResult.message("Invalid authentication request");
     } else {
