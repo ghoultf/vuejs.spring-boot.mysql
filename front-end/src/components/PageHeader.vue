@@ -8,7 +8,7 @@
       <div class="dropdown">
         <button class="btn dropdown-toggle" type="button" id="boardsMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Boards</button>
         <div class="dropdown-menu" aria-labelledby="boardsMenu">
-          <div v-show="!hasBoards" calss="dropdown-item">No boards</div>
+          <div v-show="!hasBoards" class="dropdown-item">No boards</div>
           <div v-show="hasBoards">
             <h6 class="dropdown-header" v-show="personalBoards.length">Personal Boards</h6>
             <button v-for="board in personalBoards" v-bind:key="board.id" @click="openBoard(board)" class="dropdown-item" type="button">{{ board.name }}</button>
@@ -52,7 +52,7 @@ export default {
       'teamBoards'
     ])
   },
-  create () {
+  created () {
     this.$store.dispatch('getMyData')
   },
   methods: {
@@ -70,16 +70,19 @@ export default {
 .page-header {
   padding: 9px 10px 8px;
   border-bottom: 1px solid #eee;
+
   .logo {
     color: #444;
     height: 25px;
     width: 115px;
     margin-top: 2px;
     cursor: pointer;
+
     .home-icon {
       font-size: 20px;
       vertical-align: middle;
     }
+
     img {
       margin-left: 5px;
       margin-top: 6px;
@@ -87,26 +90,31 @@ export default {
       // vertical-align: bottom;
     }
   }
+
   .boards-menu-toggle {
     padding-left: 20px;
     width: 100px;
   }
+
   .profile-menu-toggle {
     width: 215px;
     text-align: right;
   }
+
   .search-box {
     .search-wrapper {
       width: 300px;
       margin: 0 auto;
       position: relative;
     }
+
     .search-icon {
       position: absolute;
       top: 8px;
       left: 8px;
       color: #666;
     }
+
     input {
       padding-left: 30px;
       height: calc(1.8125rem + 5px);
@@ -114,11 +122,9 @@ export default {
       border: 1px solid #eee;
       border-radius: 5px;
     }
-    input:focus {
-      border: 1px solid #377ef6;
-    }
   }
 }
+
 .dropdown-toggle {
   padding: 2px 5px !important;
 }
