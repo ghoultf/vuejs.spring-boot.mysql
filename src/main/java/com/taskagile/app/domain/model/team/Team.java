@@ -76,7 +76,7 @@ public class Team extends AbstractBaseEntity {
   /**
    * Create new team
    */
-  public static Team creat(String name, UserId creatorId) {
+  public static Team create(String name, UserId creatorId) {
     Team team = new Team();
     team.name = name;
     team.archived = false;
