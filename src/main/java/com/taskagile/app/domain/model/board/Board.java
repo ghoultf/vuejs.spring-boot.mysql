@@ -76,8 +76,8 @@ public class Board extends AbstractBaseEntity {
   /**
    * @return the teamId
    */
-  public Long getTeamId() {
-    return teamId;
+  public TeamId getTeamId() {
+    return teamId == null ? new TeamId(0) : new TeamId(teamId);
   }
 
   /**

@@ -41,8 +41,8 @@ public class Team extends AbstractBaseEntity {
   /**
    * @return the id
    */
-  public Long getId() {
-    return id;
+  public TeamId getId() {
+    return new TeamId(id);
   }
 
   /**
