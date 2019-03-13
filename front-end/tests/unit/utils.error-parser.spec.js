@@ -77,7 +77,7 @@ describe('utils/error-parser', () => {
         status: 500,
         statusText: 'Internal Server Error',
         data: {
-          message: 'This is rephrased error message.'
+          message: 'This is rephrased error message. Please try again later.'
         }
       }
     }
@@ -123,6 +123,7 @@ describe('utils/error-parser', () => {
       request: {}
     }
     const parsed = errorParser.parse(error)
+    console.log(parsed)
     expect(parsed.message).toEqual('Request failed. No response from the server.')
   })
 

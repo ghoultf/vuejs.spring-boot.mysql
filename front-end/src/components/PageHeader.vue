@@ -6,11 +6,11 @@
     </div>
     <div class="boards-menu-toggle">
       <div class="dropdown">
-        <button class="btn dropdown-toggle" type="button" id="boardsMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Boards</button>
+        <button class="btn dropdown-toggle" type="button" id="boardsMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $t('header.boardsMenu.label') }}</button>
         <div class="dropdown-menu" aria-labelledby="boardsMenu">
-          <div v-show="!hasBoards" class="dropdown-item">No boards</div>
+          <div v-show="!hasBoards" class="dropdown-item">{{ $t('header.boardsMenu.noBoard') }}</div>
           <div v-show="hasBoards">
-            <h6 class="dropdown-header" v-show="personalBoards.length">Personal Boards</h6>
+            <h6 class="dropdown-header" v-show="personalBoards.length">{{ $t('header.boardsMenu.personalBoards') }}</h6>
             <button v-for="board in personalBoards" v-bind:key="board.id" @click="openBoard(board)" class="dropdown-item" type="button">{{ board.name }}</button>
             <div v-for="team in teamBoards" v-bind:key="'t' + team.id">
               <h6 class="dropdown-header">{{ team.name }}</h6>
@@ -23,15 +23,15 @@
     <div class="search-box flex-fill">
       <div class="search-wrapper">
         <font-awesome-icon icon="search" class="search-icon"/>
-        <input type="text" placeholder="Search" class="form-control form-control-sm">
+        <input type="text" v-bind:placeholder="$t('header.search')" class="form-control form-control-sm">
       </div>
     </div>
     <div class="profile-menu-toggle">
       <div class="dropdown">
         <button class="btn dropdown-toggle" type="button" id="profileMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user.name }}</button>
         <div class="dropdown-menu" aria-labelledby="profileMenu">
-          <button class="dropdown-item" type="button">Profile</button>
-          <button class="dropdown-item" type="button">Sign Out</button>
+          <button class="dropdown-item" type="button">{{ $t('header.profile') }}</button>
+          <button class="dropdown-item" type="button">{{ $t('header.signOut') }}</button>
         </div>
       </div>
     </div>
