@@ -9,7 +9,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class HibernateBoardMemberRepository extends HibernateSupport<BoardMember> implements BoardMemberRepository {
-  public HibernateBoardMemberRepository(EntityManager entityManager) {
+
+  HibernateBoardMemberRepository(EntityManager entityManager) {
     super(entityManager);
   }
 }

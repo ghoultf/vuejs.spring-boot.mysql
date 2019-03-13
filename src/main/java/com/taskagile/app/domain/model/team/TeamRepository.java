@@ -5,6 +5,7 @@ import java.util.List;
 import com.taskagile.app.domain.model.user.UserId;
 
 public interface TeamRepository {
+
   /**
    * Find the teams that created by a user
    *

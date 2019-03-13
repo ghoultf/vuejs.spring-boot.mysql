@@ -27,5 +27,4 @@ public class HibernateTeamRepository extends HibernateSupport<Team> implements T
     query.setParameter("userId", userId.value());
     return query.list();
   }
-
 }

@@ -15,16 +15,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class TeamApiController {
-  private TeamService service;
 
-  public TeamApiController(TeamService service) {
-    this.service = service;
+  private TeamService teamService;
+
+  public TeamApiController(TeamService teamService) {
+    this.teamService = teamService;
   }
 
   @PostMapping("/api/teams")
   public ResponseEntity<ApiResult> createTeam(@RequestBody CreateTeamPayload payload,
       @CurrentUser SimpleUser currentUser) {
-    Team team = service.createTeam(payload.toCommand(currentUser.getUserId()));
+    Team team = teamService.createTeam(payload.toCommand(currentUser.getUserId()));
     return CreateTeamResult.build(team);
   }
 }

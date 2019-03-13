@@ -23,8 +23,8 @@ public class BoardServiceImpl implements BoardService {
   private BoardManagement boardManagement;
   private DomainEventPublisher domainEventPublisher;
 
-  public BoardServiceImpl(DomainEventPublisher domainEventPublisher, BoardRepository boardRepository,
-      BoardManagement boardManagement) {
+  public BoardServiceImpl(BoardRepository boardRepository, BoardManagement boardManagement,
+      DomainEventPublisher domainEventPublisher) {
     this.boardRepository = boardRepository;
     this.boardManagement = boardManagement;
     this.domainEventPublisher = domainEventPublisher;
@@ -42,5 +42,4 @@ public class BoardServiceImpl implements BoardService {
     domainEventPublisher.publish(new BoardCreatedEvent(this, board));
     return board;
   }
-
 }

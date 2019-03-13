@@ -12,6 +12,7 @@ import com.taskagile.app.domain.model.user.SimpleUser;
 import org.springframework.http.ResponseEntity;
 
 public class GetMyDataResult {
+
   public static ResponseEntity<ApiResult> build(SimpleUser currentUser, List<Team> teams, List<Board> boards) {
     Map<String, Object> user = new HashMap<>();
     user.put("name", currentUser.getUsername());
@@ -25,7 +26,9 @@ public class GetMyDataResult {
     for (Board board : boards) {
       boardResults.add(new BoardResult(board));
     }
+
     ApiResult apiResult = ApiResult.blank().add("user", user).add("teams", teamResults).add("boards", boardResults);
+
     return Result.ok(apiResult);
   }
 
@@ -38,16 +41,10 @@ public class GetMyDataResult {
       this.name = team.getName();
     }
 
-    /**
-     * @return the id
-     */
     public long getId() {
       return id;
     }
 
-    /**
-     * @return the name
-     */
     public String getName() {
       return name;
     }
@@ -66,33 +63,20 @@ public class GetMyDataResult {
       this.teamId = board.getTeamId().value();
     }
 
-    /**
-     * @return the id
-     */
     public long getId() {
       return id;
     }
 
-    /**
-     * @return the name
-     */
     public String getName() {
       return name;
     }
 
-    /**
-     * @return the description
-     */
     public String getDescription() {
       return description;
     }
 
-    /**
-     * @return the teamId
-     */
     public long getTeamId() {
       return teamId;
     }
-
   }
 }

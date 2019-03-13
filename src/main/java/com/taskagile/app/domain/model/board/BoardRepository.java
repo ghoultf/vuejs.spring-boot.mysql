@@ -5,6 +5,7 @@ import java.util.List;
 import com.taskagile.app.domain.model.user.UserId;
 
 public interface BoardRepository {
+
   /**
    * Find the boards that a user is a member, including those boards the user
    * created as well as joined.
@@ -17,7 +18,7 @@ public interface BoardRepository {
   /**
    * Save a board
    *
-   * @param board the board to store
+   * @param board the board to save
    */
   void save(Board board);
 }

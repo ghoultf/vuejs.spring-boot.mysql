@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BoardManagement {
-  private BoardRepository boardRepository;
 
+  private BoardRepository boardRepository;
   private BoardMemberRepository boardMemberRepository;
 
   public BoardManagement(BoardRepository boardRepository, BoardMemberRepository boardMemberRepository) {
-    this.boardMemberRepository = boardMemberRepository;
     this.boardRepository = boardRepository;
+    this.boardMemberRepository = boardMemberRepository;
   }
 
   /**
@@ -30,7 +30,8 @@ public class BoardManagement {
     Board board = Board.create(creatorId, name, description, teamId);
     boardRepository.save(board);
     // Add the creator to as a board member
-    boardMemberRepository.save(BoardMember.create(board.getId(), creatorId));
+    BoardMember boardMember = BoardMember.create(board.getId(), creatorId);
+    boardMemberRepository.save(boardMember);
     return board;
   }
 }

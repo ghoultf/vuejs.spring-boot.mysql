@@ -6,7 +6,7 @@ import javax.persistence.EntityManager;
 
 abstract class HibernateSupport<T> {
 
-  EntityManager entityManager;
+  private EntityManager entityManager;
 
   HibernateSupport(EntityManager entityManager) {
     this.entityManager = entityManager;
@@ -20,5 +20,4 @@ abstract class HibernateSupport<T> {
     entityManager.persist(object);
     entityManager.flush();
   }
-
 }

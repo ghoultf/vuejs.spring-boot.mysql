@@ -13,7 +13,7 @@ import com.taskagile.app.domain.common.model.AbstractBaseEntity;
 import com.taskagile.app.domain.model.user.UserId;
 
 @Entity
-@Table(name="board_member")
+@Table(name = "board_member")
 public class BoardMember extends AbstractBaseEntity {
 
   private static final long serialVersionUID = 1101935717986500672L;
@@ -21,39 +21,38 @@ public class BoardMember extends AbstractBaseEntity {
   @EmbeddedId
   private BoardMemberId id;
 
-  /**
-   * @return the id
-   */
-  public BoardMemberId getId() {
-    return id;
-  }
-
   public static BoardMember create(BoardId boardId, UserId userId) {
     BoardMember boardMember = new BoardMember();
     boardMember.id = new BoardMemberId(boardId, userId);
     return boardMember;
   }
 
+  public long getBoardId() {
+    return id.boardId;
+  }
+
+  public long getUserId() {
+    return id.userId;
+  }
+
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o)
       return true;
-    }
-    if (!(obj instanceof BoardMember)) {
+    if (!(o instanceof BoardMember))
       return false;
-    }
-    BoardMember that = (BoardMember) obj;
-    return Objects.equals(this.id, that.id);
+    BoardMember that = (BoardMember) o;
+    return Objects.equals(id, that.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id);
+    return Objects.hash(id);
   }
 
   @Override
   public String toString() {
-    return "BoardMember{" + "id= " + id + "}";
+    return "BoardMember{" + "id=" + id + '}';
   }
 
   @Embeddable
@@ -68,7 +67,6 @@ public class BoardMember extends AbstractBaseEntity {
     private long userId;
 
     public BoardMemberId() {
-
     }
 
     private BoardMemberId(BoardId boardId, UserId userId) {
@@ -76,30 +74,22 @@ public class BoardMember extends AbstractBaseEntity {
       this.userId = userId.value();
     }
 
-    /**
-     * @return the boardId
-     */
-    public long getBoardId() {
-      return boardId;
+    public BoardId getBoardId() {
+      return new BoardId(boardId);
     }
 
-    /**
-     * @return the userId
-     */
-    public long getUserId() {
-      return userId;
+    public UserId getUserId() {
+      return new UserId(userId);
     }
 
     @Override
-    public boolean equals(Object obj) {
-      if (this == obj) {
+    public boolean equals(Object o) {
+      if (this == o)
         return true;
-      }
-      if (!(obj instanceof BoardMemberId)) {
+      if (!(o instanceof BoardMemberId))
         return false;
-      }
-      BoardMemberId boardMemberId = (BoardMemberId) obj;
-      return this.boardId == boardMemberId.boardId && this.userId == boardMemberId.userId;
+      BoardMemberId that = (BoardMemberId) o;
+      return boardId == that.boardId && userId == that.userId;
     }
 
     @Override
@@ -109,7 +99,7 @@ public class BoardMember extends AbstractBaseEntity {
 
     @Override
     public String toString() {
-      return "BoardMemberId{" + ", boardId=" + boardId + "userId=" + userId + "}";
+      return "BoardMemberId{" + "boardId=" + boardId + ", userId=" + userId + '}';
     }
   }
 }

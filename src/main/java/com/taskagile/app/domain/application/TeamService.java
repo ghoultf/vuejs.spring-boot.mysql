@@ -23,5 +23,4 @@ public interface TeamService {
    * @return the newly created team
    */
   Team createTeam(CreateTeamCommand command);
-
 }

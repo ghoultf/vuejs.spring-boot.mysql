@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public abstract class AbstractBaseId implements Serializable {
 
-  private static final long serialVersionUID = -8145762552145950632L;
+  private static final long serialVersionUID = 3435210296634626689L;
 
   private long id;
 
@@ -13,7 +13,7 @@ public abstract class AbstractBaseId implements Serializable {
   }
 
   public long value() {
-    return this.id;
+    return id;
   }
 
   public boolean isValid() {

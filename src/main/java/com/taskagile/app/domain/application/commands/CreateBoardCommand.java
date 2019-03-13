@@ -4,43 +4,32 @@ import com.taskagile.app.domain.model.team.TeamId;
 import com.taskagile.app.domain.model.user.UserId;
 
 public class CreateBoardCommand {
+
   private UserId userId;
-  private TeamId teamId;
   private String name;
   private String description;
+  private TeamId teamId;
 
-  public CreateBoardCommand(UserId userId, TeamId temId, String name, String description) {
+  public CreateBoardCommand(UserId userId, String name, String description, TeamId teamId) {
     this.userId = userId;
-    this.teamId = temId;
     this.name = name;
     this.description = description;
+    this.teamId = teamId;
   }
 
-  /**
-   * @return the teamId
-   */
-  public TeamId getTeamId() {
-    return teamId;
+  public UserId getUserId() {
+    return userId;
   }
 
-  /**
-   * @return the name
-   */
   public String getName() {
     return name;
   }
 
-  /**
-   * @return the description
-   */
   public String getDescription() {
     return description;
   }
 
-  /**
-   * @return the userId
-   */
-  public UserId getUserId() {
-    return userId;
+  public TeamId getTeamId() {
+    return teamId;
   }
 }

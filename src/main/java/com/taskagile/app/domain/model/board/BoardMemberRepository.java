@@ -1,6 +1,7 @@
 package com.taskagile.app.domain.model.board;
 
 public interface BoardMemberRepository {
+
   /**
    * Save board member
    *

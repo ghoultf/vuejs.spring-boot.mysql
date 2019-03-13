@@ -20,20 +20,20 @@ import com.taskagile.app.domain.model.user.UserId;
 @Table(name = "board")
 public class Board extends AbstractBaseEntity {
 
-  private static final long serialVersionUID = 5943180400146382234L;
+  private static final long serialVersionUID = -7789177855101967490L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "name", nullable = false, length = 128)
+  @Column(name = "name", nullable = false, length = 128, unique = true)
   private String name;
 
-  @Column(name = "description")
+  @Column(name = "description", nullable = false, length = 256, unique = true)
   private String description;
 
   @Column(name = "user_id")
-  private Long userId;
+  private long userId;
 
   @Column(name = "team_id")
   private Long teamId;
@@ -42,89 +42,69 @@ public class Board extends AbstractBaseEntity {
   private boolean archived;
 
   @Temporal(TemporalType.TIMESTAMP)
-  @Column(name = "created_date")
+  @Column(name = "created_date", nullable = false)
   private Date createdDate;
 
   /**
-   * @return the id
+   * Create new board
    */
-  public BoardId getId() {
-    return new BoardId(id);
-  }
-
-  /**
-   * @return the name
-   */
-  public String getName() {
-    return name;
-  }
-
-  /**
-   * @return the description
-   */
-  public String getDescription() {
-    return description;
-  }
-
-  /**
-   * @return the userId
-   */
-  public UserId getUserId() {
-    return new UserId(userId);
-  }
-
-  /**
-   * @return the teamId
-   */
-  public TeamId getTeamId() {
-    return teamId == null ? new TeamId(0) : new TeamId(teamId);
-  }
-
-  /**
-   * @return the archived
-   */
-  public boolean isArchived() {
-    return archived;
-  }
-
-  /**
-   * @return the createdDate
-   */
-  public Date getCreatedDate() {
-    return createdDate;
-  }
-
   public static Board create(UserId userId, String name, String description, TeamId teamId) {
     Board board = new Board();
+    board.userId = userId.value();
     board.name = name;
     board.description = description;
-    board.userId = userId.value();
     board.teamId = teamId.isValid() ? teamId.value() : null;
     board.archived = false;
     board.createdDate = new Date();
     return board;
   }
 
+  public BoardId getId() {
+    return new BoardId(id);
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public UserId getUserId() {
+    return new UserId(userId);
+  }
+
+  public TeamId getTeamId() {
+    return teamId == null ? new TeamId(0) : new TeamId(teamId);
+  }
+
+  public boolean isArchived() {
+    return archived;
+  }
+
+  public Date getCreatedDate() {
+    return createdDate;
+  }
+
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o)
       return true;
-    }
-    if (!(obj instanceof Board)) {
+    if (!(o instanceof Board))
       return false;
-    }
-    Board board = (Board) obj;
+    Board board = (Board) o;
     return userId == board.userId && teamId == board.teamId && Objects.equals(name, board.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.userId, this.teamId, this.name);
+    return Objects.hash(name, userId, teamId);
   }
 
   @Override
   public String toString() {
-    return "Board{" + "id=" + id + ", name='" + name + "', description='" + description + "', userId=" + userId
-        + ", teamId=" + teamId + ", archived=" + archived + ", createdDate='" + createdDate + "'}";
+    return "Board{" + "id=" + id + ", name='" + name + '\'' + ", description='" + description + '\'' + ", userId="
+        + userId + ", teamId=" + teamId + ", archived=" + archived + ", createdDate=" + createdDate + '}';
   }
 }

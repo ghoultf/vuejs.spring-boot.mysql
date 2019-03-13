@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MeApiController {
 
   private TeamService teamService;
-
   private BoardService boardService;
 
   public MeApiController(TeamService teamService, BoardService boardService) {

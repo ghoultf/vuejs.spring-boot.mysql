@@ -15,6 +15,6 @@ public class TeamCreatedEvent extends DomainEvent {
   }
 
   public Team getTeam() {
-    return this.team;
+    return team;
   }
 }

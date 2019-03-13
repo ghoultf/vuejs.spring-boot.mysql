@@ -20,8 +20,8 @@ public class TeamServiceImpl implements TeamService {
   private DomainEventPublisher domainEventPublisher;
 
   public TeamServiceImpl(TeamRepository teamRepository, DomainEventPublisher domainEventPublisher) {
-    this.domainEventPublisher = domainEventPublisher;
     this.teamRepository = teamRepository;
+    this.domainEventPublisher = domainEventPublisher;
   }
 
   @Override

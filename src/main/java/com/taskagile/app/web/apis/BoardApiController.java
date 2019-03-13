@@ -17,16 +17,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class BoardApiController {
-  private BoardService service;
 
-  public BoardApiController(BoardService service) {
-    this.service = service;
+  private BoardService boardService;
+
+  public BoardApiController(BoardService boardService) {
+    this.boardService = boardService;
   }
 
   @PostMapping("/api/boards")
-  public ResponseEntity<ApiResult> createBoard(@Valid @RequestBody CreateBoardPayload payload,
+  public ResponseEntity<ApiResult> createBoard(@RequestBody CreateBoardPayload payload,
       @CurrentUser SimpleUser currentUser) {
-    Board board = service.createBoard(payload.toCommand(currentUser.getUserId()));
+    Board board = boardService.createBoard(payload.toCommand(currentUser.getUserId()));
     return CreateBoardResult.build(board);
   }
 }

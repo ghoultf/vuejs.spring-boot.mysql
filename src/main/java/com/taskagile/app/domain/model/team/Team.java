@@ -19,7 +19,7 @@ import com.taskagile.app.domain.model.user.UserId;
 @Table(name = "team")
 public class Team extends AbstractBaseEntity {
 
-  private static final long serialVersionUID = 136731809946334126L;
+  private static final long serialVersionUID = -2264390861852998965L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class Team extends AbstractBaseEntity {
   @Column(name = "name", nullable = false, length = 128)
   private String name;
 
-  @Column(name = "user_id")
+  @Column(name = "userId")
   private long userId;
 
   @Column(name = "archived")
@@ -37,41 +37,6 @@ public class Team extends AbstractBaseEntity {
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "created_date", nullable = false)
   private Date createdDate;
-
-  /**
-   * @return the id
-   */
-  public TeamId getId() {
-    return new TeamId(id);
-  }
-
-  /**
-   * @return the name
-   */
-  public String getName() {
-    return name;
-  }
-
-  /**
-   * @return the userId
-   */
-  public long getUserId() {
-    return userId;
-  }
-
-  /**
-   * @return the archived
-   */
-  public boolean isArchived() {
-    return archived;
-  }
-
-  /**
-   * @return the createdDate
-   */
-  public Date getCreatedDate() {
-    return createdDate;
-  }
 
   /**
    * Create new team
@@ -85,15 +50,33 @@ public class Team extends AbstractBaseEntity {
     return team;
   }
 
+  public TeamId getId() {
+    return new TeamId(id);
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public UserId getUserId() {
+    return new UserId(userId);
+  }
+
+  public boolean isArchived() {
+    return archived;
+  }
+
+  public Date getCreatedDate() {
+    return createdDate;
+  }
+
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o)
       return true;
-    }
-    if (!(obj instanceof Team)) {
+    if (!(o instanceof Team))
       return false;
-    }
-    Team team = (Team) obj;
+    Team team = (Team) o;
     return userId == team.userId && Objects.equals(name, team.name);
   }
 
