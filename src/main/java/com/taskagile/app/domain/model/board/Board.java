@@ -48,8 +48,8 @@ public class Board extends AbstractBaseEntity {
   /**
    * @return the id
    */
-  public Long getId() {
-    return id;
+  public BoardId getId() {
+    return new BoardId(id);
   }
 
   /**
@@ -69,8 +69,8 @@ public class Board extends AbstractBaseEntity {
   /**
    * @return the userId
    */
-  public Long getUserId() {
-    return userId;
+  public UserId getUserId() {
+    return new UserId(userId);
   }
 
   /**

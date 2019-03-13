@@ -2,16 +2,17 @@ package com.taskagile.app.domain.model.board;
 
 import java.util.List;
 
-import com.taskagile.app.domain.model.team.TeamId;
+import com.taskagile.app.domain.model.user.UserId;
 
 public interface BoardRepository {
   /**
-   * Find the boards that blong to a team
+   * Find the boards that a user is a member, including those boards the user
+   * created as well as joined.
    *
-   * @param teamId the id of the team
-   * @return the list of boards or an empty list if none found
+   * @param userId the id of the user
+   * @return a list of boards or an empty list if none found
    */
-  List<Board> findBoardsByTeamId(TeamId teamId);
+  List<Board> findBoardsByMembership(UserId userId);
 
   /**
    * Save a board
