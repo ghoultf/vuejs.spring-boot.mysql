@@ -14,5 +14,19 @@ export default {
         reject(errorParser.parse(error))
       })
     })
+  },
+
+  /**
+   * Get a board and everything under it
+   * @param {*} boardId the id of the board
+   */
+  getBoard (boardId) {
+    return new Promise((resolve, reject) => {
+      axios.get('/boards/' + boardId).then(({ data }) => {
+        resolve(data)
+      }).catch((error) => {
+        reject(errorParser.parse(error))
+      })
+    })
   }
 }

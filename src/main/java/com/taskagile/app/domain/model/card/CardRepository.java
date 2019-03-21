@@ -1,0 +1,16 @@
+package com.taskagile.app.domain.model.card;
+
+import java.util.List;
+
+import com.taskagile.app.domain.model.board.BoardId;
+
+public interface CardRepository {
+
+  /**
+   * Find cards of a board
+   *
+   * @param boardId the id of the board
+   * @return a list of cards of that board or an empty list if none found
+   */
+  List<Card> findByBoardId(BoardId boardId);
+}

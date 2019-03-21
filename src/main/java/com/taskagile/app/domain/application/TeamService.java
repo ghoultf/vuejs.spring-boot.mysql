@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.taskagile.app.domain.application.commands.CreateTeamCommand;
 import com.taskagile.app.domain.model.team.Team;
+import com.taskagile.app.domain.model.team.TeamId;
 import com.taskagile.app.domain.model.user.UserId;
 
 public interface TeamService {
@@ -15,6 +16,14 @@ public interface TeamService {
    * @return a list of teams or an empty list if none found
    */
   List<Team> findTeamsByUserId(UserId userId);
+
+  /**
+   * Find team by its id
+   *
+   * @param teamId the id of team
+   * @return the team instanse, null if not found
+   */
+  Team findById(TeamId teamId);
 
   /**
    * Create a new team

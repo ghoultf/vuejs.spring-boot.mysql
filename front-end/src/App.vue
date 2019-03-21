@@ -13,8 +13,21 @@ export default {
 </script>
 
 <style lang="scss">
-html {
+html,
+body {
+  height: 100%;
   font-size: 14px;
+}
+
+#app,
+.page {
+  height: 100%;
+  position: relative;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
 }
 
 .public.container {
