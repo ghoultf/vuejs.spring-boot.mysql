@@ -24,11 +24,12 @@
             </div>
           </div>
           <div class="board-body">
-            <draggable class="list-container">
+            <draggable v-model="cardLists" class="list-container" @end="onCardListDragEnded" :options="{handle: '.list-header', animation: 0, scrollSensitivity: 100, touchStartThreshold: 20}">
               <div class="list-wrapper" v-for="cardList in cardLists" v-bind:key="cardList.id">
                 <div class="list">
                   <div class="list-header">{{ cardList.name }}</div>
-                  <draggable class="cards" v-model="cardList.cards">
+                  <draggable class="cards" v-model="cardList.cards" @end="onCardDragEnded" :options="{draggable: '.card-item', group: 'cards', ghostClass: 'ghost-card',
+                    animation: 0, scrollSensitivity: 100, touchStartThreshold: 20}" v-bind:data-list-id="cardList.id">
                     <div class="card-item" v-for="card in cardList.cards" v-bind:key="card.id">
                       <div class="card-title">{{ card.title }}</div>
                     </div>
@@ -55,6 +56,8 @@
 import PageHeader from '@/components/PageHeader.vue'
 import draggable from 'vuedraggable'
 import boardService from '@/services/boards'
+import cardListService from '@/services/card-lists'
+import cardService from '@/services/cards'
 import notify from '@/utils/notify'
 
 export default {
@@ -70,127 +73,6 @@ export default {
       cardLists: [/* {id, name, cards} */],
       team: { name: '' },
       members: [/* {id,shortName} */]
-      // board: { id: 1, name: 'mockBoard', personal: false },
-      // /* {id, name, cards} */
-      // cardLists: [{
-      //   id: 1,
-      //   name: 'mockBoardList1',
-      //   cards: [{
-      //     id: 2,
-      //     title: 'mockBoardCard2'
-      //   }, {
-      //     id: 3,
-      //     title: 'mockBoardCard3'
-      //   }, {
-      //     id: 4,
-      //     title: 'mockBoardCard4'
-      //   }, {
-      //     id: 5,
-      //     title: 'mockBoardCard5'
-      //   }, {
-      //     id: 6,
-      //     title: 'mockBoardCard6'
-      //   }, {
-      //     id: 7,
-      //     title: 'mockBoardCard7'
-      //   }, {
-      //     id: 8,
-      //     title: 'mockBoardCard8'
-      //   }, {
-      //     id: 9,
-      //     title: 'mockBoardCard9'
-      //   }, {
-      //     id: 10,
-      //     title: 'mockBoardCard10'
-      //   }, {
-      //     id: 11,
-      //     title: 'mockBoardCard11'
-      //   }, {
-      //     id: 12,
-      //     title: 'mockBoardCard12'
-      //   }, {
-      //     id: 13,
-      //     title: 'mockBoardCard13'
-      //   }, {
-      //     id: 14,
-      //     title: 'mockBoardCard14'
-      //   }, {
-      //     id: 15,
-      //     title: 'mockBoardCard15'
-      //   }, {
-      //     id: 16,
-      //     title: 'mockBoardCard16'
-      //   }, {
-      //     id: 17,
-      //     title: 'mockBoardCard17'
-      //   }, {
-      //     id: 18,
-      //     title: 'mockBoardCard18'
-      //   }, {
-      //     id: 2,
-      //     title: 'mockBoardCard2'
-      //   }, {
-      //     id: 3,
-      //     title: 'mockBoardCard3'
-      //   }, {
-      //     id: 4,
-      //     title: 'mockBoardCard4'
-      //   }, {
-      //     id: 5,
-      //     title: 'mockBoardCard5'
-      //   }, {
-      //     id: 6,
-      //     title: 'mockBoardCard6'
-      //   }, {
-      //     id: 7,
-      //     title: 'mockBoardCard7'
-      //   }, {
-      //     id: 8,
-      //     title: 'mockBoardCard8'
-      //   }, {
-      //     id: 9,
-      //     title: 'mockBoardCard9'
-      //   }, {
-      //     id: 10,
-      //     title: 'mockBoardCard10'
-      //   }, {
-      //     id: 11,
-      //     title: 'mockBoardCard11'
-      //   }, {
-      //     id: 12,
-      //     title: 'mockBoardCard12'
-      //   }, {
-      //     id: 13,
-      //     title: 'mockBoardCard13'
-      //   }, {
-      //     id: 14,
-      //     title: 'mockBoardCard14'
-      //   }, {
-      //     id: 15,
-      //     title: 'mockBoardCard15'
-      //   }, {
-      //     id: 16,
-      //     title: 'mockBoardCard16'
-      //   }, {
-      //     id: 17,
-      //     title: 'mockBoardCard17'
-      //   }, {
-      //     id: 18,
-      //     title: 'mockBoardCard18'
-      //   }]
-      // }, {
-      //   id: 2,
-      //   name: 'mockBoardList2'
-      // }],
-      // team: { name: 'team name 1' },
-      // /* {id,shortName} */
-      // members: [{
-      //   id: 1,
-      //   shortName: 's1'
-      // }, {
-      //   id: 2,
-      //   shortName: 's2'
-      // }]
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -227,6 +109,57 @@ export default {
     }).catch(error => {
       notify.error(error.message)
     })
+  },
+  methods: {
+    onCardListDragEnded (event) {
+      // Get the latest card list order and send it to the back-end
+      const positionChanges = {
+        boardId: this.board.id,
+        cardListPositions: []
+      }
+
+      this.cardLists.forEach((cardList, index) => {
+        positionChanges.cardListPositions.push({
+          cardListId: cardList.id,
+          position: index + 1
+        })
+      })
+
+      cardListService.changePositions(positionChanges).catch(error => {
+        notify.error(error.message)
+      })
+    },
+    onCardDragEnded (event) {
+      console.log('card drag ended', event)
+      // Get the card list that have card orders changed
+      const fromListId = event.from.dataset.listId
+      const toListId = event.to.dataset.listId
+      const changedListIds = [fromListId]
+
+      if (fromListId !== toListId) {
+        changedListIds.push(toListId)
+      }
+
+      const positionChanges = {
+        boardId: this.board.id,
+        cardPositions: []
+      }
+
+      changedListIds.forEach(changeListId => {
+        const cardList = this.cardLists.filter(cardList => { return cardList.id === parseInt(changeListId) })[0]
+
+        cardList.cards.forEach((card, index) => {
+          positionChanges.cardPositions.push({
+            cardListId: changeListId,
+            cardId: card.id,
+            position: index + 1
+          })
+        })
+      })
+      cardService.changePositions(positionChanges).catch(error => {
+        notify.error(error.message)
+      })
+    }
   }
 }
 </script>
@@ -374,10 +307,15 @@ export default {
                   margin: 0 8px 8px;
                   box-shadow: 0 1px 0 #ccc;
                   cursor: pointer;
+
+                  .card-title {
+                    margin: 0;
+                  }
                 }
 
-                .card-title {
-                  margin: 0;
+                .ghost-card {
+                  background-color: #377ef6 !important;
+                  color: #377ef6 !important;
                 }
               }
             }

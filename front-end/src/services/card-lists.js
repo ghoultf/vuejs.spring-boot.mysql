@@ -3,25 +3,21 @@ import errorParser from '@/utils/error-parser'
 
 export default {
   /**
-   * Create a new board
-   * @param {*} detail the board detail
+   * Add a new card list
+   * @param {*} detail the card list detail
    */
-  create (detail) {
+  add (detail) {
     return new Promise((resolve, reject) => {
-      axios.post('/boards', detail).then(({ data }) => {
+      axios.post('/card-lists', detail).then(({ data }) => {
         resolve(data)
       }).catch((error) => {
         reject(errorParser.parse(error))
       })
     })
   },
-  /**
-   * Get a board and everything under it
-   * @param {*} boardId the id of the board
-   */
-  getBoard (boardId) {
+  changePositions (positionChanges) {
     return new Promise((resolve, reject) => {
-      axios.get('/boards/' + boardId).then(({ data }) => {
+      axios.post('/card-lists/positions', positionChanges).then(({ data }) => {
         resolve(data)
       }).catch((error) => {
         reject(errorParser.parse(error))
