@@ -1,0 +1,34 @@
+package com.taskagile.app.domain.application.commands;
+
+import com.taskagile.app.domain.model.board.BoardId;
+import com.taskagile.app.domain.model.user.UserId;
+
+public class AddCardListCommand {
+  private UserId userId;
+  private String name;
+  private BoardId boardId;
+  private int position;
+
+  public AddCardListCommand(BoardId boardId, UserId userId, String name, int position) {
+    this.boardId = boardId;
+    this.userId = userId;
+    this.name = name;
+    this.position = position;
+  }
+
+  public UserId getUserId() {
+    return userId;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public BoardId getBoardId() {
+    return boardId;
+  }
+
+  public int getPosition() {
+    return position;
+  }
+}
