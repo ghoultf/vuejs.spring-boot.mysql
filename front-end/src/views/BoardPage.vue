@@ -34,32 +34,26 @@
                       <div class="card-title">{{ card.title }}</div>
                     </div>
                     <div class="add-card-form-wrapper" v-if="cardList.cardForm.open">
-                      <form class="add-card-form" @submit.prevent="addCard(cardList)">
+                      <form @submit.prevent="addCard(cardList)" class="add-card-form">
                         <div class="form-group">
-                          <textarea class="form-control" v-model="cardList.cardForm.title" v-bind:id="'cardTitle'+cardList.id" @keydown.enter.prevent="addCard(cardList)" placeholder="Type card title here"></textarea>
+                          <textarea class="form-control" v-model="cardList.cardForm.title" v-bind:id="'cardTitle' + cardList.id" @keydown.enter.prevent="addCard(cardList)" placeholder="Type card title here"></textarea>
                         </div>
-                        <button class="btn btn-sm btn-primary" type="submit">Add</button>
-                        <button class="btn btn-sm btn-link btn-cancel" type="button" @click="closeAddCardForm(cardList)">Cancel</button>
                       </form>
+                      <button type="submit" class="btn btn-sm btn-primary">Add</button>
+                      <button type="button" class="btn btn-sm btn-link btn-cancel" @click="closeAddCardForm(cardList)">Cancel</button>
                     </div>
                   </draggable>
-                  <div class="add-card-button" v-show="!cardList.cardForm.open" @click="openAddCardForm(cardList)">
-                    <font-awesome-icon icon="plus"/>
-                    <div>Add a card</div>
-                  </div>
+                  <div class="add-card-button" v-show="!cardList.cardForm.open" @click="openAddCardForm(cardList)">+ Add a card</div>
                 </div>
               </div>
               <div class="list-wrapper add-list">
-                <div class="add-list-button" v-show="!addListForm.open" @click="openAddListForm()">
-                  <font-awesome-icon icon="plus"/>
-                  <div>Add a list</div>
-                </div>
-                <form class="add-list-form" @submit.prevent="addCardList()" v-if="addListForm.open">
+                <div class="add-list-button" v-show="!addListForm.open" @click="openAddListForm()">+ Add a list</div>
+                <form @submit.prevent="addCardList()" v-show="addListForm.open" class="add-list-form">
                   <div class="form-group">
                     <input type="text" class="form-control" v-model="addListForm.name" id="cardListName" placeholder="Type list name here">
                   </div>
-                  <button class="btn btn-sm btn-primary" type="submit">Add list</button>
-                  <button class="btn btn-sm btn-link btn-cancel" type="button" @click="closeAddListForm()">Cancel</button>
+                  <button type="submit" class="btn btn-sm btn-primary">Add List</button>
+                  <button type="button" class="btn btn-sm btn-link btn-cancel" @click="closeAddListForm()">Cancel</button>
                 </form>
               </div>
             </draggable>
@@ -67,7 +61,7 @@
         </div>
       </div>
     </div>
-    <AddMemberModal :boardId="board.id" @added="onMemberAdded"></AddMemberModal>
+    <AddMemberModal :boardId="board.id" @added="onMemberAdded"/>
   </div>
 </template>
 
@@ -83,35 +77,34 @@ import cardService from '@/services/cards'
 
 export default {
   name: 'BoardPage',
-  props: ['teamId'],
-  components: {
-    PageHeader,
-    draggable,
-    AddMemberModal
-  },
   data () {
     return {
       board: { id: 0, name: '', personal: false },
       cardLists: [/* {id, name, cards, cardForm} */],
       team: { name: '' },
-      members: [/* {id,shortName} */],
+      members: [/* {id, shortName} */],
       addListForm: {
         open: false,
         name: ''
       }
     }
   },
+  components: {
+    PageHeader,
+    AddMemberModal,
+    draggable
+  },
   beforeRouteEnter (to, from, next) {
     boardService.getBoard(to.params.boardId).then(data => {
       next(vm => {
         vm.team.name = data.team ? data.team.name : ''
         vm.board.id = data.board.id
-        vm.board.name = data.board.name
         vm.board.personal = data.board.personal
+        vm.board.name = data.board.name
 
         data.members.forEach(member => {
           vm.members.push({
-            id: member.id,
+            id: member.userId,
             shortName: member.shortName
           })
         })
@@ -140,7 +133,30 @@ export default {
       notify.error(error.message)
     })
   },
+  mounted () {
+    this.$el.addEventListener('click', this.dismissActiveForms)
+  },
+  beforeDestroy () {
+    this.$el.removeEventListener('click', this.dismissActiveForms)
+  },
   methods: {
+    dismissActiveForms (event) {
+      console.log('dismissing forms')
+      let dismissAddCardForm = true
+      let dismissAddListForm = true
+      if (event.target.closest('.add-card-form') || event.target.closest('.add-card-button')) {
+        dismissAddCardForm = false
+      }
+      if (event.target.closest('.add-list-form') || event.target.closest('.add-list-button')) {
+        dismissAddListForm = false
+      }
+      if (dismissAddCardForm) {
+        this.cardLists.forEach((cardList) => { cardList.cardForm.open = false })
+      }
+      if (dismissAddListForm) {
+        this.addListForm.open = false
+      }
+    },
     openAddMember () {
       $('#addMemberModal').modal('show')
     },
@@ -148,16 +164,14 @@ export default {
       this.members.push(member)
     },
     addCardList () {
-      if (!this.addListForm.name.trim()) {
+      if (!this.addListForm.name) {
         return
       }
-
       const cardList = {
         boardId: this.board.id,
         name: this.addListForm.name,
         position: this.cardLists.length + 1
       }
-
       cardListService.add(cardList).then(savedCardList => {
         this.cardLists.push({
           id: savedCardList.id,
@@ -177,6 +191,7 @@ export default {
       if (!cardList.cardForm.title.trim()) {
         return
       }
+
       const card = {
         boardId: this.board.id,
         cardListId: cardList.id,
@@ -250,12 +265,12 @@ export default {
         cardPositions: []
       }
 
-      changedListIds.forEach(changeListId => {
-        const cardList = this.cardLists.filter(cardList => { return cardList.id === parseInt(changeListId) })[0]
+      changedListIds.forEach(cardListId => {
+        const cardList = this.cardLists.filter(cardList => { return cardList.id === parseInt(cardListId) })[0]
 
         cardList.cards.forEach((card, index) => {
           positionChanges.cardPositions.push({
-            cardListId: changeListId,
+            cardListId: cardListId,
             cardId: card.id,
             position: index + 1
           })
