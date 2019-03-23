@@ -34,7 +34,7 @@ import { required } from 'vuelidate/lib/validators'
 import boardService from '@/services/boards'
 
 export default {
-  name: 'addMemberModal',
+  name: 'AddMemberModal',
   props: ['boardId'],
   data () {
     return {

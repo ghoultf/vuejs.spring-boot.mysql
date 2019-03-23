@@ -17,5 +17,4 @@ public class CardListAddedEvent extends DomainEvent {
   public CardList getCardList() {
     return cardList;
   }
-
 }

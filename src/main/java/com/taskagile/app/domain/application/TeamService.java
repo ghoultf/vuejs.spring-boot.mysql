@@ -1,11 +1,11 @@
 package com.taskagile.app.domain.application;
 
-import java.util.List;
-
 import com.taskagile.app.domain.application.commands.CreateTeamCommand;
 import com.taskagile.app.domain.model.team.Team;
 import com.taskagile.app.domain.model.team.TeamId;
 import com.taskagile.app.domain.model.user.UserId;
+
+import java.util.List;
 
 public interface TeamService {
 
@@ -18,10 +18,10 @@ public interface TeamService {
   List<Team> findTeamsByUserId(UserId userId);
 
   /**
-   * Find team by its id
+   * Find a team by its id
    *
-   * @param teamId the id of team
-   * @return the team instanse, null if not found
+   * @param teamId the id of the team
+   * @return a team instance or null if not found
    */
   Team findById(TeamId teamId);
 
@@ -32,4 +32,5 @@ public interface TeamService {
    * @return the newly created team
    */
   Team createTeam(CreateTeamCommand command);
+
 }

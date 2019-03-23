@@ -1,7 +1,6 @@
 package com.taskagile.app.web.results;
 
 import com.taskagile.app.domain.model.board.Board;
-
 import org.springframework.http.ResponseEntity;
 
 public class CreateBoardResult {

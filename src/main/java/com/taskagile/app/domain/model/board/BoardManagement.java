@@ -2,7 +2,6 @@ package com.taskagile.app.domain.model.board;
 
 import com.taskagile.app.domain.model.team.TeamId;
 import com.taskagile.app.domain.model.user.UserId;
-
 import org.springframework.stereotype.Component;
 
 @Component

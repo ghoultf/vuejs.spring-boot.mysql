@@ -1,21 +1,20 @@
 package com.taskagile.app.web.results;
 
+import com.taskagile.app.domain.model.board.Board;
+import com.taskagile.app.domain.model.team.Team;
+import com.taskagile.app.domain.model.user.User;
+import org.springframework.http.ResponseEntity;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.taskagile.app.domain.model.board.Board;
-import com.taskagile.app.domain.model.team.Team;
-import com.taskagile.app.domain.model.user.SimpleUser;
-
-import org.springframework.http.ResponseEntity;
-
 public class GetMyDataResult {
 
-  public static ResponseEntity<ApiResult> build(SimpleUser currentUser, List<Team> teams, List<Board> boards) {
-    Map<String, Object> user = new HashMap<>();
-    user.put("name", currentUser.getUsername());
+  public static ResponseEntity<ApiResult> build(User user, List<Team> teams, List<Board> boards) {
+    Map<String, Object> userData = new HashMap<>();
+    userData.put("name", user.getFirstName() + " " + user.getLastName());
 
     List<TeamResult> teamResults = new ArrayList<>();
     for (Team team : teams) {
@@ -27,7 +26,7 @@ public class GetMyDataResult {
       boardResults.add(new BoardResult(board));
     }
 
-    ApiResult apiResult = ApiResult.blank().add("user", user).add("teams", teamResults).add("boards", boardResults);
+    ApiResult apiResult = ApiResult.blank().add("user", userData).add("teams", teamResults).add("boards", boardResults);
 
     return Result.ok(apiResult);
   }

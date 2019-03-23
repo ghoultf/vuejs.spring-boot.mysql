@@ -1,13 +1,13 @@
 package com.taskagile.app.domain.application;
 
-import java.util.List;
-
 import com.taskagile.app.domain.application.commands.CreateBoardCommand;
 import com.taskagile.app.domain.model.board.Board;
 import com.taskagile.app.domain.model.board.BoardId;
 import com.taskagile.app.domain.model.user.User;
 import com.taskagile.app.domain.model.user.UserId;
 import com.taskagile.app.domain.model.user.UserNotFoundException;
+
+import java.util.List;
 
 public interface BoardService {
 
@@ -23,16 +23,16 @@ public interface BoardService {
   /**
    * Find board by its id
    *
-   * @param boardId the id of board
-   * @return the board instance, null if not fond
+   * @param boardId the id of the board
+   * @return the board instance, null if not found
    */
   Board findById(BoardId boardId);
 
   /**
    * Find board members
    *
-   * @param boardId the id of board
-   * @return a list of members of board
+   * @param boardId the id of the board
+   * @return a list of members of the board
    */
   List<User> findMembers(BoardId boardId);
 

@@ -1,9 +1,5 @@
 package com.taskagile.app.domain.application.impl;
 
-import java.util.List;
-
-import javax.transaction.Transactional;
-
 import com.taskagile.app.domain.application.CardListService;
 import com.taskagile.app.domain.application.commands.AddCardListCommand;
 import com.taskagile.app.domain.application.commands.ChangeCardListPositionsCommand;
@@ -12,8 +8,10 @@ import com.taskagile.app.domain.model.board.BoardId;
 import com.taskagile.app.domain.model.cardlist.CardList;
 import com.taskagile.app.domain.model.cardlist.CardListRepository;
 import com.taskagile.app.domain.model.cardlist.events.CardListAddedEvent;
-
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -36,6 +34,7 @@ public class CardListServiceImpl implements CardListService {
   public CardList addCardList(AddCardListCommand command) {
     CardList cardList = CardList.create(command.getBoardId(), command.getUserId(), command.getName(),
         command.getPosition());
+
     cardListRepository.save(cardList);
     domainEventPublisher.publish(new CardListAddedEvent(this, cardList));
     return cardList;
@@ -45,5 +44,4 @@ public class CardListServiceImpl implements CardListService {
   public void changePositions(ChangeCardListPositionsCommand command) {
     cardListRepository.changePositions(command.getCardListPositions());
   }
-
 }

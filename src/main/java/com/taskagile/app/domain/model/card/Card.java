@@ -1,20 +1,12 @@
 package com.taskagile.app.domain.model.card;
 
-import java.util.Date;
-import java.util.Objects;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import com.taskagile.app.domain.common.model.AbstractBaseEntity;
 import com.taskagile.app.domain.model.cardlist.CardListId;
 import com.taskagile.app.domain.model.user.UserId;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "card")

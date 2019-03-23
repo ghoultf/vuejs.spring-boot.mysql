@@ -1,14 +1,14 @@
 package com.taskagile.app.web.payload;
 
+import com.taskagile.app.domain.application.commands.RegistrationCommand;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.taskagile.app.domain.application.commands.RegistrationCommand;
-
 public class RegistrationPayload {
 
-  @Size(min = 2, max = 50, message = "Username must between 2 and 50 characters")
+  @Size(min = 2, max = 50, message = "Username must be between 2 and 50 characters")
   @NotNull
   private String username;
 
@@ -17,53 +17,59 @@ public class RegistrationPayload {
   @NotNull
   private String emailAddress;
 
-  @Size(min = 6, max = 30, message = "Password must between 6 and 30 characters")
+  @Size(min = 1, max = 45, message = "First name must be between 1 and 45 characters")
+  @NotNull
+  private String firstName;
+
+  @Size(min = 1, max = 45, message = "Last name must be between 1 and 45 characters")
+  @NotNull
+  private String lastName;
+
+  @Size(min = 6, max = 30, message = "Password must be between 6 and 30 characters")
   @NotNull
   private String password;
 
-  /**
-   * @return the username
-   */
+  public RegistrationCommand toCommand() {
+    return new RegistrationCommand(this.username, this.emailAddress, this.firstName, this.lastName, this.password);
+  }
+
   public String getUsername() {
     return username;
   }
 
-  /**
-   * @param username the username to set
-   */
   public void setUsername(String username) {
     this.username = username;
   }
 
-  /**
-   * @return the emailAddress
-   */
   public String getEmailAddress() {
     return emailAddress;
   }
 
-  /**
-   * @param emailAddress the emailAddress to set
-   */
   public void setEmailAddress(String emailAddress) {
     this.emailAddress = emailAddress;
   }
 
-  /**
-   * @return the password
-   */
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
   public String getPassword() {
     return password;
   }
 
-  /**
-   * @param password the password to set
-   */
   public void setPassword(String password) {
     this.password = password;
-  }
-
-  public RegistrationCommand toCommand() {
-    return new RegistrationCommand(this.username, this.emailAddress, this.password);
   }
 }

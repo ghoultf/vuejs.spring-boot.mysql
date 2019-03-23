@@ -38,9 +38,9 @@
                         <div class="form-group">
                           <textarea class="form-control" v-model="cardList.cardForm.title" v-bind:id="'cardTitle' + cardList.id" @keydown.enter.prevent="addCard(cardList)" placeholder="Type card title here"></textarea>
                         </div>
-                      </form>
                       <button type="submit" class="btn btn-sm btn-primary">Add</button>
                       <button type="button" class="btn btn-sm btn-link btn-cancel" @click="closeAddCardForm(cardList)">Cancel</button>
+                      </form>
                     </div>
                   </draggable>
                   <div class="add-card-button" v-show="!cardList.cardForm.open" @click="openAddCardForm(cardList)">+ Add a card</div>
@@ -210,12 +210,6 @@ export default {
         notify.error(error.message)
       })
     },
-    openAddCardForm (cardList) {
-      // Close other add card form
-      this.cardLists.forEach((cardList) => { cardList.cardForm.open = false })
-      cardList.cardForm.open = true
-      this.focusCardForm(cardList)
-    },
     openAddListForm () {
       this.addListForm.open = true
       this.$nextTick(() => {
@@ -225,6 +219,12 @@ export default {
     closeAddListForm () {
       this.addListForm.open = false
       this.addListForm.name = ''
+    },
+    openAddCardForm (cardList) {
+      // Close other add card form
+      this.cardLists.forEach((cardList) => { cardList.cardForm.open = false })
+      cardList.cardForm.open = true
+      this.focusCardForm(cardList)
     },
     focusCardForm (cardList) {
       this.$nextTick(() => { $('#cardTitle' + cardList.id).trigger('focus') })

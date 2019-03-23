@@ -5,7 +5,8 @@ import com.taskagile.app.domain.model.board.BoardId;
 import com.taskagile.app.domain.model.user.User;
 
 public class BoardMemberAddedEvent extends DomainEvent {
-  private static final long serialVersionUID = -6241977715847228136L;
+
+  private static final long serialVersionUID = -8979992986207557039L;
 
   private BoardId boardId;
   private User user;

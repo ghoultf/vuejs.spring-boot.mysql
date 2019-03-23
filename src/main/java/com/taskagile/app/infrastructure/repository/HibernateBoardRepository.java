@@ -1,17 +1,15 @@
 package com.taskagile.app.infrastructure.repository;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
 import com.taskagile.app.domain.model.board.Board;
 import com.taskagile.app.domain.model.board.BoardId;
 import com.taskagile.app.domain.model.board.BoardRepository;
 import com.taskagile.app.domain.model.user.UserId;
-
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 public class HibernateBoardRepository extends HibernateSupport<Board> implements BoardRepository {
@@ -34,5 +32,4 @@ public class HibernateBoardRepository extends HibernateSupport<Board> implements
     query.setParameter("id", boardId.value());
     return query.uniqueResult();
   }
-
 }

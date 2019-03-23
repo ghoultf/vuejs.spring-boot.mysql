@@ -1,20 +1,20 @@
 package com.taskagile.app.web.results;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.taskagile.app.domain.model.board.Board;
 import com.taskagile.app.domain.model.card.Card;
 import com.taskagile.app.domain.model.cardlist.CardList;
 import com.taskagile.app.domain.model.cardlist.CardListId;
 import com.taskagile.app.domain.model.team.Team;
 import com.taskagile.app.domain.model.user.User;
-
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class BoardResult {
+
   public static ResponseEntity<ApiResult> build(Team team, Board board, List<User> members, List<CardList> cardLists,
       List<Card> cards) {
     Map<String, Object> boardData = new HashMap<>();
@@ -22,9 +22,9 @@ public class BoardResult {
     boardData.put("name", board.getName());
     boardData.put("personal", board.isPersonal());
 
-    List<MemberData> membersDatas = new ArrayList<>();
+    List<MemberData> membersData = new ArrayList<>();
     for (User user : members) {
-      membersDatas.add(new MemberData(user));
+      membersData.add(new MemberData(user));
     }
 
     List<CardListData> cardListsData = new ArrayList<>();
@@ -32,14 +32,16 @@ public class BoardResult {
     for (Card card : cards) {
       cardsByList.computeIfAbsent(card.getCardListId(), k -> new ArrayList<>()).add(card);
     }
+
     for (CardList cardList : cardLists) {
       cardListsData.add(new CardListData(cardList, cardsByList.get(cardList.getId())));
     }
 
-    ApiResult result = ApiResult.blank().add("board", boardData).add("members", membersDatas).add("cardLists",
+    ApiResult result = ApiResult.blank().add("board", boardData).add("members", membersData).add("cardLists",
         cardListsData);
+
     if (!board.isPersonal()) {
-      Map<String, Object> teamData = new HashMap<>();
+      Map<String, String> teamData = new HashMap<>();
       teamData.put("name", team.getName());
       result.add("team", teamData);
     }
@@ -47,28 +49,21 @@ public class BoardResult {
   }
 
   private static class MemberData {
-    private long id;
+    private long userId;
     private String shortName;
 
     MemberData(User user) {
-      id = user.getId().value();
-      shortName = user.getInitials();
+      this.userId = user.getId().value();
+      this.shortName = user.getInitials();
     }
 
-    /**
-     * @return the id
-     */
-    public long getId() {
-      return id;
+    public long getUserId() {
+      return userId;
     }
 
-    /**
-     * @return the shortName
-     */
     public String getShortName() {
       return shortName;
     }
-
   }
 
   private static class CardListData {
@@ -88,30 +83,18 @@ public class BoardResult {
       }
     }
 
-    /**
-     * @return the id
-     */
     public long getId() {
       return id;
     }
 
-    /**
-     * @return the name
-     */
     public String getName() {
       return name;
     }
 
-    /**
-     * @return the position
-     */
     public int getPosition() {
       return position;
     }
 
-    /**
-     * @return the cards
-     */
     public List<CardData> getCards() {
       return cards;
     }
@@ -128,25 +111,17 @@ public class BoardResult {
       this.position = card.getPosition();
     }
 
-    /**
-     * @return the id
-     */
     public long getId() {
       return id;
     }
 
-    /**
-     * @return the title
-     */
     public String getTitle() {
       return title;
     }
 
-    /**
-     * @return the position
-     */
     public int getPosition() {
-      return this.position;
+      return position;
     }
   }
+
 }

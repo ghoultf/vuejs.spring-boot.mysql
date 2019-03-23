@@ -1,18 +1,11 @@
 package com.taskagile.app.web.apis;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.taskagile.app.config.SecurityConfiguration;
 import com.taskagile.app.domain.application.UserService;
 import com.taskagile.app.domain.model.user.EmailAddressExistsException;
 import com.taskagile.app.domain.model.user.UsernameExistsException;
 import com.taskagile.app.utils.JsonUtils;
 import com.taskagile.app.web.payload.RegistrationPayload;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +16,15 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { SecurityConfiguration.class, RegistrationApiController.class })
-@WebMvcTest()
+@WebMvcTest
 public class RegistrationApiControllerTests {
 
   @Autowired
@@ -45,6 +44,8 @@ public class RegistrationApiControllerTests {
     payload.setUsername("exist");
     payload.setEmailAddress("test@taskagile.com");
     payload.setPassword("MyPassword!");
+    payload.setFirstName("User");
+    payload.setLastName("Test");
 
     doThrow(UsernameExistsException.class).when(serviceMock).register(payload.toCommand());
 
@@ -58,6 +59,8 @@ public class RegistrationApiControllerTests {
     payload.setUsername("test");
     payload.setEmailAddress("exist@taskagile.com");
     payload.setPassword("MyPassword!");
+    payload.setFirstName("User");
+    payload.setLastName("Test");
 
     doThrow(EmailAddressExistsException.class).when(serviceMock).register(payload.toCommand());
 
@@ -71,6 +74,8 @@ public class RegistrationApiControllerTests {
     payload.setUsername("sunny");
     payload.setEmailAddress("sunny@taskagile.com");
     payload.setPassword("MyPassword!");
+    payload.setFirstName("User");
+    payload.setLastName("Test");
 
     doNothing().when(serviceMock).register(payload.toCommand());
 

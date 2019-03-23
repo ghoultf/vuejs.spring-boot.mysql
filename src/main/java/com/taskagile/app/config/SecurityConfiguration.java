@@ -1,11 +1,10 @@
 package com.taskagile.app.config;
 
-import com.taskagile.app.web.apis.authenticate.AccessDeniedHandlerImpl;
+import com.taskagile.app.domain.common.security.AccessDeniedHandlerImpl;
 import com.taskagile.app.web.apis.authenticate.AuthenticationFilter;
 import com.taskagile.app.web.apis.authenticate.SimpleAuthenticationFailureHandler;
 import com.taskagile.app.web.apis.authenticate.SimpleAuthenticationSuccessHandler;
 import com.taskagile.app.web.apis.authenticate.SimpleLogoutSuccessHandler;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -30,7 +29,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http.exceptionHandling().accessDeniedHandler(accessDeniedHandler()).and().authorizeRequests().antMatchers(PUBLIC)
         .permitAll().anyRequest().authenticated().and()
         .addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter.class).formLogin().loginPage("/login")
-        .and().logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler()).and().csrf().disable();
+        .and().logout().logoutUrl("/api/me/logout").logoutSuccessHandler(logoutSuccessHandler()).and().csrf().disable();
   }
 
   @Override

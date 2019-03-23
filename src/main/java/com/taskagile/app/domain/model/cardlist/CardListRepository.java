@@ -1,8 +1,8 @@
 package com.taskagile.app.domain.model.cardlist;
 
-import java.util.List;
-
 import com.taskagile.app.domain.model.board.BoardId;
+
+import java.util.List;
 
 public interface CardListRepository {
 

@@ -5,7 +5,7 @@ import com.taskagile.app.domain.model.card.Card;
 
 public class CardAddedEvent extends DomainEvent {
 
-  private static final long serialVersionUID = 6708919203916449457L;
+  private static final long serialVersionUID = 26551114425630902L;
 
   private Card card;
 
@@ -17,5 +17,4 @@ public class CardAddedEvent extends DomainEvent {
   public Card getCard() {
     return card;
   }
-
 }

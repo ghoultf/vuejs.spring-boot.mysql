@@ -39,6 +39,10 @@ textarea.form-control:focus {
   border: 1px solid #377ef6 !important;
 }
 
+.btn-cancel {
+  color: #666 !important;
+}
+
 .public {
   .form {
     margin-top: 50px;

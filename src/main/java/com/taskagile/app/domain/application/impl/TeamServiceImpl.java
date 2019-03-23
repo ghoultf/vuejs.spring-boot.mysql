@@ -31,15 +31,15 @@ public class TeamServiceImpl implements TeamService {
   }
 
   @Override
+  public Team findById(TeamId teamId) {
+    return teamRepository.findById(teamId);
+  }
+
+  @Override
   public Team createTeam(CreateTeamCommand command) {
     Team team = Team.create(command.getName(), command.getUserId());
     teamRepository.save(team);
     domainEventPublisher.publish(new TeamCreatedEvent(this, team));
     return team;
-  }
-
-  @Override
-  public Team findById(TeamId teamId) {
-    return teamRepository.FindById(teamId);
   }
 }

@@ -4,6 +4,7 @@ import com.taskagile.app.domain.model.board.BoardId;
 import com.taskagile.app.domain.model.user.UserId;
 
 public class AddCardListCommand {
+
   private UserId userId;
   private String name;
   private BoardId boardId;
@@ -16,16 +17,16 @@ public class AddCardListCommand {
     this.position = position;
   }
 
+  public BoardId getBoardId() {
+    return boardId;
+  }
+
   public UserId getUserId() {
     return userId;
   }
 
   public String getName() {
     return name;
-  }
-
-  public BoardId getBoardId() {
-    return boardId;
   }
 
   public int getPosition() {

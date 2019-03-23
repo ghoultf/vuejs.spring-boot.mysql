@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserFinder {
+
   private UserRepository userRepository;
 
   public UserFinder(UserRepository userRepository) {

@@ -1,6 +1,7 @@
 package com.taskagile.app.web.payload;
 
 public class AddBoardMemberPayload {
+
   private String usernameOrEmailAddress;
 
   public String getUsernameOrEmailAddress() {
@@ -10,5 +11,4 @@ public class AddBoardMemberPayload {
   public void setUsernameOrEmailAddress(String usernameOrEmailAddress) {
     this.usernameOrEmailAddress = usernameOrEmailAddress;
   }
-
 }

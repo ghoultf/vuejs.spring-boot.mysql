@@ -1,17 +1,15 @@
 package com.taskagile.app.infrastructure.repository;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
 import com.taskagile.app.domain.model.team.Team;
 import com.taskagile.app.domain.model.team.TeamId;
 import com.taskagile.app.domain.model.team.TeamRepository;
 import com.taskagile.app.domain.model.user.UserId;
-
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 public class HibernateTeamRepository extends HibernateSupport<Team> implements TeamRepository {
@@ -31,7 +29,7 @@ public class HibernateTeamRepository extends HibernateSupport<Team> implements T
   }
 
   @Override
-  public Team FindById(TeamId teamId) {
+  public Team findById(TeamId teamId) {
     Query<Team> query = getSession().createQuery("from Team where id = :id", Team.class);
     query.setParameter("id", teamId.value());
     return query.uniqueResult();

@@ -35,5 +35,4 @@ public abstract class AbstractBaseId implements Serializable {
   public int hashCode() {
     return Objects.hash(id);
   }
-
 }

@@ -1,11 +1,6 @@
 package com.taskagile.app.web.apis;
 
-import java.util.List;
-
-import com.taskagile.app.domain.application.BoardService;
-import com.taskagile.app.domain.application.CardListService;
-import com.taskagile.app.domain.application.CardService;
-import com.taskagile.app.domain.application.TeamService;
+import com.taskagile.app.domain.application.*;
 import com.taskagile.app.domain.common.security.CurrentUser;
 import com.taskagile.app.domain.model.board.Board;
 import com.taskagile.app.domain.model.board.BoardId;
@@ -21,7 +16,6 @@ import com.taskagile.app.web.results.ApiResult;
 import com.taskagile.app.web.results.BoardResult;
 import com.taskagile.app.web.results.CreateBoardResult;
 import com.taskagile.app.web.results.Result;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,20 +23,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @Controller
 public class BoardApiController {
 
   private BoardService boardService;
   private TeamService teamService;
-  private CardService cardService;
   private CardListService cardListService;
+  private CardService cardService;
+  private UserService userService;
 
-  public BoardApiController(BoardService boardService, TeamService teamService, CardService cardService,
-      CardListService cardListService) {
+  public BoardApiController(BoardService boardService, TeamService teamService, CardListService cardListService,
+      CardService cardService) {
     this.boardService = boardService;
     this.teamService = teamService;
-    this.cardService = cardService;
     this.cardListService = cardListService;
+    this.cardService = cardService;
   }
 
   @PostMapping("/api/boards")
@@ -59,7 +56,6 @@ public class BoardApiController {
     if (board == null) {
       return Result.notFound();
     }
-
     List<User> members = boardService.findMembers(boardId);
 
     Team team = null;
@@ -69,6 +65,7 @@ public class BoardApiController {
 
     List<CardList> cardLists = cardListService.findByBoardId(boardId);
     List<Card> cards = cardService.findByBoardId(boardId);
+
     return BoardResult.build(team, board, members, cardLists, cards);
   }
 

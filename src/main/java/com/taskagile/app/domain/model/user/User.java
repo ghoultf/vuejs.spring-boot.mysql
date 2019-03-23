@@ -38,13 +38,13 @@ public class User extends AbstractBaseEntity {
   /**
    * Create new user
    */
-  public static User create(String username, String emailAddress, String password) {
+  public static User create(String username, String emailAddress, String firsName, String lastName, String password) {
     User user = new User();
     user.username = username;
     user.emailAddress = emailAddress;
     user.password = password;
-    user.firstName = "";
-    user.lastName = "";
+    user.firstName = firsName;
+    user.lastName = lastName;
     user.createdDate = new Date();
     return user;
   }

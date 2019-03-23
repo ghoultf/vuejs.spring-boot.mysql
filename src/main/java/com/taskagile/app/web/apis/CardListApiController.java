@@ -9,7 +9,6 @@ import com.taskagile.app.web.payload.ChangeCardListPositionsPayload;
 import com.taskagile.app.web.results.AddCardListResult;
 import com.taskagile.app.web.results.ApiResult;
 import com.taskagile.app.web.results.Result;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +24,7 @@ public class CardListApiController {
   }
 
   @PostMapping("/api/card-lists")
-  public ResponseEntity<ApiResult> createCardList(@RequestBody AddCardListPayload payload,
+  public ResponseEntity<ApiResult> addCardList(@RequestBody AddCardListPayload payload,
       @CurrentUser SimpleUser currentUser) {
     CardList cardList = cardListService.addCardList(payload.toCommand(currentUser.getUserId()));
     return AddCardListResult.build(cardList);
@@ -36,5 +35,4 @@ public class CardListApiController {
     cardListService.changePositions(payload.toCommand());
     return Result.ok();
   }
-
 }

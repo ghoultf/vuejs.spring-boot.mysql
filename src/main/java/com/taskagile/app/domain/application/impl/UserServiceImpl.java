@@ -5,13 +5,8 @@ import com.taskagile.app.domain.application.commands.RegistrationCommand;
 import com.taskagile.app.domain.common.event.DomainEventPublisher;
 import com.taskagile.app.domain.common.mail.MailManager;
 import com.taskagile.app.domain.common.mail.MessageVariable;
-import com.taskagile.app.domain.model.user.RegistrationException;
-import com.taskagile.app.domain.model.user.RegistrationManagement;
-import com.taskagile.app.domain.model.user.SimpleUser;
-import com.taskagile.app.domain.model.user.User;
-import com.taskagile.app.domain.model.user.UserRepository;
+import com.taskagile.app.domain.model.user.*;
 import com.taskagile.app.domain.model.user.events.UserRegisteredEvent;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -55,10 +50,15 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public User findById(UserId userId) {
+    return userRepository.findById(userId);
+  }
+
+  @Override
   public void register(RegistrationCommand command) throws RegistrationException {
     Assert.notNull(command, "Parameter `command` must not be null");
     User newUser = registrationManagement.register(command.getUsername(), command.getEmailAddress(),
-        command.getPassword());
+        command.getFirstName(), command.getLastName(), command.getPassword());
 
     sendWelcomeMessage(newUser);
     domainEventPublisher.publish(new UserRegisteredEvent(this, newUser));

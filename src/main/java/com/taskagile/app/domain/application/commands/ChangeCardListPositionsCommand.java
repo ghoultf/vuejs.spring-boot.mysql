@@ -1,11 +1,12 @@
 package com.taskagile.app.domain.application.commands;
 
-import java.util.List;
-
 import com.taskagile.app.domain.model.board.BoardId;
 import com.taskagile.app.domain.model.cardlist.CardListPosition;
 
+import java.util.List;
+
 public class ChangeCardListPositionsCommand {
+
   private BoardId boardId;
   private List<CardListPosition> cardListPositions;
 
@@ -21,5 +22,4 @@ public class ChangeCardListPositionsCommand {
   public List<CardListPosition> getCardListPositions() {
     return cardListPositions;
   }
-
 }

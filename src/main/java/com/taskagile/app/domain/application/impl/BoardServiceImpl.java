@@ -1,42 +1,35 @@
 package com.taskagile.app.domain.application.impl;
 
-import java.util.List;
-
-import javax.transaction.Transactional;
-
 import com.taskagile.app.domain.application.BoardService;
 import com.taskagile.app.domain.application.commands.CreateBoardCommand;
 import com.taskagile.app.domain.common.event.DomainEventPublisher;
-import com.taskagile.app.domain.model.board.Board;
-import com.taskagile.app.domain.model.board.BoardId;
-import com.taskagile.app.domain.model.board.BoardManagement;
-import com.taskagile.app.domain.model.board.BoardMember;
-import com.taskagile.app.domain.model.board.BoardMemberRepository;
-import com.taskagile.app.domain.model.board.BoardRepository;
+import com.taskagile.app.domain.model.board.*;
 import com.taskagile.app.domain.model.board.events.BoardCreatedEvent;
 import com.taskagile.app.domain.model.board.events.BoardMemberAddedEvent;
 import com.taskagile.app.domain.model.user.User;
 import com.taskagile.app.domain.model.user.UserFinder;
 import com.taskagile.app.domain.model.user.UserId;
 import com.taskagile.app.domain.model.user.UserNotFoundException;
-
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
 public class BoardServiceImpl implements BoardService {
 
   private BoardRepository boardRepository;
-  private BoardMemberRepository boardMemberRepository;
   private BoardManagement boardManagement;
+  private BoardMemberRepository boardMemberRepository;
   private UserFinder userFinder;
   private DomainEventPublisher domainEventPublisher;
 
-  public BoardServiceImpl(BoardRepository boardRepository, BoardMemberRepository boardMemberRepository,
-      BoardManagement boardManagement, UserFinder userFinder, DomainEventPublisher domainEventPublisher) {
+  public BoardServiceImpl(BoardRepository boardRepository, BoardManagement boardManagement,
+      BoardMemberRepository boardMemberRepository, UserFinder userFinder, DomainEventPublisher domainEventPublisher) {
     this.boardRepository = boardRepository;
-    this.boardMemberRepository = boardMemberRepository;
     this.boardManagement = boardManagement;
+    this.boardMemberRepository = boardMemberRepository;
     this.userFinder = userFinder;
     this.domainEventPublisher = domainEventPublisher;
   }
@@ -44,14 +37,6 @@ public class BoardServiceImpl implements BoardService {
   @Override
   public List<Board> findBoardsByMembership(UserId userId) {
     return boardRepository.findBoardsByMembership(userId);
-  }
-
-  @Override
-  public Board createBoard(CreateBoardCommand command) {
-    Board board = boardManagement.createBoard(command.getUserId(), command.getName(), command.getDescription(),
-        command.getTeamId());
-    domainEventPublisher.publish(new BoardCreatedEvent(this, board));
-    return board;
   }
 
   @Override
@@ -65,9 +50,17 @@ public class BoardServiceImpl implements BoardService {
   }
 
   @Override
+  public Board createBoard(CreateBoardCommand command) {
+    Board board = boardManagement.createBoard(command.getUserId(), command.getName(), command.getDescription(),
+        command.getTeamId());
+    domainEventPublisher.publish(new BoardCreatedEvent(this, board));
+    return board;
+  }
+
+  @Override
   public User addMember(BoardId boardId, String usernameOrEmailAddress) throws UserNotFoundException {
     User user = userFinder.find(usernameOrEmailAddress);
-    boardMemberRepository.save(BoardMember.create(boardId, user.getId()));
+    boardMemberRepository.add(boardId, user.getId());
     domainEventPublisher.publish(new BoardMemberAddedEvent(this, boardId, user));
     return user;
   }

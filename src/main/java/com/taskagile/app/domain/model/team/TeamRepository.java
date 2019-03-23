@@ -1,8 +1,8 @@
 package com.taskagile.app.domain.model.team;
 
-import java.util.List;
-
 import com.taskagile.app.domain.model.user.UserId;
+
+import java.util.List;
 
 public interface TeamRepository {
 
@@ -20,7 +20,7 @@ public interface TeamRepository {
    * @param teamId the id of the team
    * @return the team instance or null if not found
    */
-  Team FindById(TeamId teamId);
+  Team findById(TeamId teamId);
 
   /**
    * Save a team

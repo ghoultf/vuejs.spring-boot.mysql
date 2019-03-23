@@ -9,7 +9,6 @@ import com.taskagile.app.web.payload.ChangeCardPositionsPayload;
 import com.taskagile.app.web.results.AddCardResult;
 import com.taskagile.app.web.results.ApiResult;
 import com.taskagile.app.web.results.Result;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class CardApiController {
+
   private CardService cardService;
 
   public CardApiController(CardService cardService) {

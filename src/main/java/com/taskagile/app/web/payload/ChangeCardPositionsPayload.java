@@ -1,10 +1,10 @@
 package com.taskagile.app.web.payload;
 
-import java.util.List;
-
 import com.taskagile.app.domain.application.commands.ChangeCardPositionsCommand;
 import com.taskagile.app.domain.model.board.BoardId;
 import com.taskagile.app.domain.model.card.CardPosition;
+
+import java.util.List;
 
 public class ChangeCardPositionsPayload {
 
@@ -22,5 +22,4 @@ public class ChangeCardPositionsPayload {
   public void setCardPositions(List<CardPosition> cardPositions) {
     this.cardPositions = cardPositions;
   }
-
 }

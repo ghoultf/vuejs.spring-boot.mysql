@@ -27,7 +27,7 @@ public class RegistrationPayloadTests {
     RegistrationPayload payload = new RegistrationPayload();
 
     Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
-    assertEquals(3, violations.size());
+    assertEquals(5, violations.size());
   }
 
   @Test
@@ -36,6 +36,8 @@ public class RegistrationPayloadTests {
     payload.setEmailAddress("BadEmailAddress");
     payload.setUsername("MyUsername");
     payload.setPassword("MyPassword");
+    payload.setFirstName("MyName");
+    payload.setLastName("Test");
 
     Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
     assertEquals(1, violations.size());
@@ -54,6 +56,8 @@ public class RegistrationPayloadTests {
     payload.setEmailAddress(localPart + "@" + domain + ".com");
     payload.setUsername("MyUsername");
     payload.setPassword("MyPassword");
+    payload.setFirstName("MyName");
+    payload.setLastName("Test");
 
     Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
     assertEquals(1, violations.size());
@@ -66,6 +70,8 @@ public class RegistrationPayloadTests {
     payload.setUsername(usernameTooShort);
     payload.setPassword("MyPassword");
     payload.setEmailAddress("sunny@taskagile.com");
+    payload.setFirstName("Sunny");
+    payload.setLastName("Hu");
 
     Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
     assertEquals(1, violations.size());
@@ -78,6 +84,8 @@ public class RegistrationPayloadTests {
     payload.setUsername(usernameTooLong);
     payload.setPassword("MyPassword");
     payload.setEmailAddress("sunny@taskagile.com");
+    payload.setFirstName("Sunny");
+    payload.setLastName("Hu");
 
     Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
     assertEquals(1, violations.size());
@@ -90,6 +98,8 @@ public class RegistrationPayloadTests {
     payload.setPassword(passwordTooShort);
     payload.setUsername("MyUsername");
     payload.setEmailAddress("sunny@taskagile.com");
+    payload.setFirstName("Sunny");
+    payload.setLastName("Hu");
 
     Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
     assertEquals(1, violations.size());
@@ -102,6 +112,8 @@ public class RegistrationPayloadTests {
     payload.setPassword(passwordTooLong);
     payload.setUsername("MyUsername");
     payload.setEmailAddress("sunny@taskagile.com");
+    payload.setFirstName("Sunny");
+    payload.setLastName("Hu");
 
     Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
     assertEquals(1, violations.size());
