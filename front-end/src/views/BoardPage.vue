@@ -33,16 +33,34 @@
                     <div class="card-item" v-for="card in cardList.cards" v-bind:key="card.id">
                       <div class="card-title">{{ card.title }}</div>
                     </div>
+                    <div class="add-card-form-wrapper" v-if="cardList.cardForm.open">
+                      <form class="add-card-form" @submit.prevent="addCard(cardList)">
+                        <div class="form-group">
+                          <textarea class="form-control" v-model="cardList.cardForm.title" v-bind:id="'cardTitle'+cardList.id" @keydown.enter.prevent="addCard(cardList)" placeholder="Type card title here"></textarea>
+                        </div>
+                      </form>
+                      <button class="btn btn-sm btn-primary" type="submit">Add</button>
+                      <button class="btn btn-sm btn-link btn-cancel" type="button" @click="closeAddCardForm(cardList)">Cancel</button>
+                    </div>
                   </draggable>
-                  <div class="add-card-button">
+                  <div class="add-card-button" v-show="!cardList.cardForm.open" @click="openAddCardForm(cardList)">
                     <font-awesome-icon icon="plus"/>
                     <div>Add a card</div>
                   </div>
                 </div>
               </div>
-              <div class="list-wrapper">
-                <font-awesome-icon icon="plus"/>
-                <div>Add a list</div>
+              <div class="list-wrapper add-list">
+                <form class="add-list-form" @submit.prevent="addCardList()" v-if="addListForm.open">
+                  <div class="form-group">
+                    <textarea class="form-control" id="cardListName" v-model="addListForm.name" @keypress.enter.prevent="addCardList()" placeholder="Type list name here"></textarea>
+                  </div>
+                  <button class="btn btn-sm btn-primary" type="submit">Add list</button>
+                  <button class="btn btn-sm btn-link btn-cancel" type="button" @click="closeAddListForm()">Cancel</button>
+                </form>
+                <div class="add-list-button" v-show="!addListForm.open" @click="openAddListForm()">
+                  <font-awesome-icon icon="plus"/>
+                  <div>Add a list</div>
+                </div>
               </div>
             </draggable>
           </div>
@@ -53,6 +71,7 @@
 </template>
 
 <script>
+import $ from 'jquery'
 import PageHeader from '@/components/PageHeader.vue'
 import draggable from 'vuedraggable'
 import boardService from '@/services/boards'
@@ -70,9 +89,13 @@ export default {
   data () {
     return {
       board: { id: 0, name: '', personal: false },
-      cardLists: [/* {id, name, cards} */],
+      cardLists: [/* {id, name, cards, cardForm} */],
       team: { name: '' },
-      members: [/* {id,shortName} */]
+      members: [/* {id,shortName} */],
+      addListForm: {
+        open: false,
+        name: ''
+      }
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -102,7 +125,11 @@ export default {
           vm.cardLists.push({
             id: cardList.id,
             name: cardList.name,
-            cards: cardList.cards
+            cards: cardList.cards,
+            cardForm: {
+              open: false,
+              title: ''
+            }
           })
         })
       })
@@ -111,6 +138,65 @@ export default {
     })
   },
   methods: {
+    addCardList () {
+      if (!addListForm.name.trim()) {
+        return
+      }
+
+      const cardList = {
+        boardId: this.board.id,
+        name: this.addListForm.name,
+        position: this.cardlists.length + 1
+      }
+
+      cardListService.add(cardList).then(savedCardList => {
+        this.cardlists.push({
+          id: savedCardList.id,
+          name: savedCardList.name,
+          position: savedCardList.position
+        })
+      })
+    },
+    addCard (cardList) {
+      if (!cardList.cardForm.title.trim()) {
+        return
+      }
+      const card = {
+        boardId: this.board.id,
+        cardListId: cardList.id,
+        title: cardList.cardForm.title,
+        position: cardList.cards.length + 1
+      }
+      cardService.add(card).then(savedCard => {
+        cardList.cards.push({
+          id: savedCard.id,
+          title: savedCard.title
+        })
+        cardList.cardForm.title = ''
+        this.forcusCardForm(cardList)
+      }).catch(error => {
+        notify.error(error.message)
+      })
+    },
+    openAddCardForm (cardList) {
+      // Close other add card form
+      this.cardLists.forEach((cardList) => { cardList.cardForm.open = false })
+      cardList.cardForm.open = true
+      this.forcusCardForm(cardList)
+    },
+    openAddListForm () {
+      this.addListForm.open = true
+      this.$nextTick(() => { $('#cardListName').trigger('focus') })
+    },
+    forcusCardForm (cardList) {
+      this.$nextTick(() => { $('#cardTitle' + cardList.id).trigger('focus') })
+    },
+    closeAddCardForm (cardList) {
+      cardList.cardForm.open = false
+    },
+    closeAddListForm (cardList) {
+      this.addListForm.open = false
+    },
     onCardListDragEnded (event) {
       // Get the latest card list order and send it to the back-end
       const positionChanges = {
@@ -215,6 +301,7 @@ export default {
             display: block;
             float: left;
             height: 30px;
+            width: 30px;
             margin: 0 0 0 -2px;
             border-radius: 50%;
             background-color: #377ef6;
@@ -241,6 +328,14 @@ export default {
               top: 9px;
               left: 9px;
               color: #000;
+            }
+          }
+
+          .add-member-toggle:hover {
+            background-color: #666;
+
+            svg {
+              color: #fff;
             }
           }
         }
@@ -295,6 +390,25 @@ export default {
                 border-bottom-right-radius: 3px;
               }
 
+              .add-card-button:hover {
+                background: #dfdfdf;
+                color: #333;
+              }
+
+              .add-card-form-wrapper {
+                padding: 0 8px 8px;
+
+                .form-group {
+                  margin-bottom: 5px;
+
+                  textarea {
+                    resize: none;
+                    padding: 0.3rem 0.5rem;
+                    box-shadow: none;
+                  }
+                }
+              }
+
               .cards {
                 overflow-y: auto;
                 min-height: 1px;
@@ -316,6 +430,43 @@ export default {
                 .ghost-card {
                   background-color: #377ef6 !important;
                   color: #377ef6 !important;
+                }
+              }
+            }
+
+            .ghost-list .list {
+              background: #aaa;
+            }
+          }
+
+          .list-wrapper.add-list {
+            background: #f4f4f4;
+            border-radius: 3px;
+            box-sizing: border-box;
+            height: auto;
+            color: #888;
+            margin-right: 8px;
+
+            .add-list-button {
+              padding: 8px 10px;
+            }
+
+            .add-list-button:hover {
+              background: #ddd;
+              cursor: pointer;
+              border-radius: 3px;
+              color: #333;
+            }
+
+            form {
+              padding: 5px;
+
+              .form-group {
+                margin-bottom: 5px;
+
+                .form-control {
+                  height: calc(1.8rem + 2px);
+                  padding: 0.375rem 0.3rem;
                 }
               }
             }

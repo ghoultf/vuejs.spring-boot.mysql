@@ -23,7 +23,7 @@ export default new Router({
     name: 'register',
     component: RegisterPage
   }, {
-    path: '/board',
+    path: '/board/:boardId',
     name: 'board',
     component: BoardPage
   }]
