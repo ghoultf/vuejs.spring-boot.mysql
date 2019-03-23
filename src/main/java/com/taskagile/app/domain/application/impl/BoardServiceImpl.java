@@ -10,11 +10,15 @@ import com.taskagile.app.domain.common.event.DomainEventPublisher;
 import com.taskagile.app.domain.model.board.Board;
 import com.taskagile.app.domain.model.board.BoardId;
 import com.taskagile.app.domain.model.board.BoardManagement;
+import com.taskagile.app.domain.model.board.BoardMember;
 import com.taskagile.app.domain.model.board.BoardMemberRepository;
 import com.taskagile.app.domain.model.board.BoardRepository;
 import com.taskagile.app.domain.model.board.events.BoardCreatedEvent;
+import com.taskagile.app.domain.model.board.events.BoardMemberAddedEvent;
 import com.taskagile.app.domain.model.user.User;
+import com.taskagile.app.domain.model.user.UserFinder;
 import com.taskagile.app.domain.model.user.UserId;
+import com.taskagile.app.domain.model.user.UserNotFoundException;
 
 import org.springframework.stereotype.Service;
 
@@ -25,13 +29,15 @@ public class BoardServiceImpl implements BoardService {
   private BoardRepository boardRepository;
   private BoardMemberRepository boardMemberRepository;
   private BoardManagement boardManagement;
+  private UserFinder userFinder;
   private DomainEventPublisher domainEventPublisher;
 
   public BoardServiceImpl(BoardRepository boardRepository, BoardMemberRepository boardMemberRepository,
-      BoardManagement boardManagement, DomainEventPublisher domainEventPublisher) {
+      BoardManagement boardManagement, UserFinder userFinder, DomainEventPublisher domainEventPublisher) {
     this.boardRepository = boardRepository;
     this.boardMemberRepository = boardMemberRepository;
     this.boardManagement = boardManagement;
+    this.userFinder = userFinder;
     this.domainEventPublisher = domainEventPublisher;
   }
 
@@ -56,5 +62,13 @@ public class BoardServiceImpl implements BoardService {
   @Override
   public List<User> findMembers(BoardId boardId) {
     return boardMemberRepository.findMembers(boardId);
+  }
+
+  @Override
+  public User addMember(BoardId boardId, String usernameOrEmailAddress) throws UserNotFoundException {
+    User user = userFinder.find(usernameOrEmailAddress);
+    boardMemberRepository.save(BoardMember.create(boardId, user.getId()));
+    domainEventPublisher.publish(new BoardMemberAddedEvent(this, boardId, user));
+    return user;
   }
 }

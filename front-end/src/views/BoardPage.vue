@@ -16,7 +16,7 @@
               <div class="member" v-for="member in members" v-bind:key="member.id">
                 <span>{{ member.shortName }}</span>
               </div>
-              <div class="member add-member-toggle">
+              <div class="member add-member-toggle" @click="openAddMember()">
                 <span>
                   <font-awesome-icon icon="user-plus"/>
                 </span>
@@ -67,6 +67,7 @@
         </div>
       </div>
     </div>
+    <AddMemberModal :boardId="board.id" @added="onMemberAdded"></AddMemberModal>
   </div>
 </template>
 
@@ -78,13 +79,15 @@ import boardService from '@/services/boards'
 import cardListService from '@/services/card-lists'
 import cardService from '@/services/cards'
 import notify from '@/utils/notify'
+import AddMemberModal from '@/modals/AddMemberModal.vue'
 
 export default {
   name: 'BoardPage',
   props: ['teamId'],
   components: {
     PageHeader,
-    draggable
+    draggable,
+    AddMemberModal
   },
   data () {
     return {
@@ -138,8 +141,14 @@ export default {
     })
   },
   methods: {
+    onMemberAdded (member) {
+      this.members.push(member)
+    },
+    openAddMember () {
+      $('#addMemberModal').modal('show')
+    },
     addCardList () {
-      if (!addListForm.name.trim()) {
+      if (!this.addListForm.name.trim()) {
         return
       }
 

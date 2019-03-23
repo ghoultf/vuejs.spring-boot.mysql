@@ -16,6 +16,20 @@ export default {
     })
   },
   /**
+   * Add user to a board
+   * @param {*} boardId the id of the board
+   * @param {*} usernameOrEmailAddress user's username or email address
+   */
+  addMember (boardId, usernameOrEmailAddress) {
+    return new Promise((resolve, reject) => {
+      axios.post('/boards/' + boardId + '/members', { usernameOrEmailAddress }).then(({ data }) => {
+        resolve(data)
+      }).catch((error) => {
+        reject(errorParser.parse(error))
+      })
+    })
+  },
+  /**
    * Get a board and everything under it
    * @param {*} boardId the id of the board
    */

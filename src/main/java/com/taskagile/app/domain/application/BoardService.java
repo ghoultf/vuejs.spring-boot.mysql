@@ -7,6 +7,7 @@ import com.taskagile.app.domain.model.board.Board;
 import com.taskagile.app.domain.model.board.BoardId;
 import com.taskagile.app.domain.model.user.User;
 import com.taskagile.app.domain.model.user.UserId;
+import com.taskagile.app.domain.model.user.UserNotFoundException;
 
 public interface BoardService {
 
@@ -42,4 +43,14 @@ public interface BoardService {
    * @return the new board just created
    */
   Board createBoard(CreateBoardCommand command);
+
+  /**
+   * Add board member
+   *
+   * @param boardId                id of the board
+   * @param usernameOrEmailAddress username or email address
+   * @return newly added member user
+   * @throws UserNotFoundException user by the usernameOrEmailAddress not found
+   */
+  User addMember(BoardId boardId, String usernameOrEmailAddress) throws UserNotFoundException;
 }
