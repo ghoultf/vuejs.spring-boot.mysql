@@ -12,9 +12,14 @@ import java.util.Map;
 
 public class GetMyDataResult {
 
-  public static ResponseEntity<ApiResult> build(User user, List<Team> teams, List<Board> boards) {
+  public static ResponseEntity<ApiResult> build(User user, List<Team> teams, List<Board> boards,
+      String realTimeServerUrl, String realTimeToken) {
     Map<String, Object> userData = new HashMap<>();
     userData.put("name", user.getFirstName() + " " + user.getLastName());
+    userData.put("token", realTimeToken);
+
+    Map<String, Object> settings = new HashMap<>();
+    settings.put("realTimeServerUrl", realTimeServerUrl);
 
     List<TeamResult> teamResults = new ArrayList<>();
     for (Team team : teams) {
@@ -26,7 +31,9 @@ public class GetMyDataResult {
       boardResults.add(new BoardResult(board));
     }
 
-    ApiResult apiResult = ApiResult.blank().add("user", userData).add("teams", teamResults).add("boards", boardResults);
+    ApiResult apiResult = ApiResult.blank().add("user", userData).add("teams", teamResults).add("boards", boardResults)
+        .add("settings", settings);
+    ;
 
     return Result.ok(apiResult);
   }

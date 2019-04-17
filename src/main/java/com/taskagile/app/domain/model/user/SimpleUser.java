@@ -79,7 +79,6 @@ public class SimpleUser implements UserDetails, Serializable {
 
   @Override
   public String toString() {
-    return "SimpleUser{" + "userId=" + userId + ", username='" + username + '\'' + ", password='" + password + '\''
-        + '}';
+    return "SimpleUser{" + "userId=" + userId + ", username='" + username + '\'' + ", password=[Protected]" + '}';
   }
 }
