@@ -203,10 +203,7 @@ export default {
       }
 
       cardService.add(card).then(savedCard => {
-        cardList.cards.push({
-          id: savedCard.id,
-          title: savedCard.title
-        })
+        this.appendCardToList(cardList, savedCard)
         cardList.cardForm.title = ''
         this.focusCardForm(cardList)
       }).catch(error => {
@@ -286,8 +283,28 @@ export default {
         notify.error(error.message)
       })
     },
-    onRealTimeUpdated (updates) {
-      console.log('[BoardPage] Real time updated', updates)
+    onRealTimeUpdated (update) {
+      console.log('[BoardPage] Real time update received', update)
+      if (update.type === 'cardAdded') {
+        this.onCardAdded(update.card)
+      }
+    },
+    onCardAdded (card) {
+      const cardList = this.cardLists.filter(cardList => { return cardList.id === card.cardListId })[0]
+      if (!cardList) {
+        console.warn('No card list found by id ' + card.cardListId)
+        return
+      }
+      this.appendCardToList(cardList, card)
+    },
+    appendCardToList (cardList, card) {
+      const existingIndex = cardList.cards.findIndex(existingCard => { return existingCard.id === card.id })
+      if (existingIndex === -1) {
+        cardList.cards.push({
+          id: card.id,
+          title: card.title
+        })
+      }
     }
   }
 }
