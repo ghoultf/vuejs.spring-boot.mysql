@@ -14,6 +14,10 @@ export default {
       // Initializing the real time connection
       this.$rt.init(myData.settings.realTimeServerUrl, myData.user.token)
     })
+
+    this.$bus.$on('user.unauthenticated', () => {
+      this.$router.push({ name: 'login' })
+    })
   }
 }
 </script>
@@ -23,6 +27,7 @@ html,
 body {
   height: 100%;
   font-size: 14px;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif !important;
 }
 
 #app,
@@ -62,7 +67,7 @@ textarea.form-control:focus {
 
       .error {
         line-height: 1;
-        // display: none;
+        display: none;
         margin-top: 5px;
       }
     }
@@ -91,6 +96,10 @@ textarea.form-control:focus {
       .modal-title {
         font-size: 1rem;
       }
+
+      .close {
+        outline: none !important;
+      }
     }
 
     .modal-body {
@@ -113,5 +122,9 @@ textarea.form-control:focus {
       }
     }
   }
+}
+
+.modal-open .modal-backdrop.show {
+  opacity: 0.7;
 }
 </style>

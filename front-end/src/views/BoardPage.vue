@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" v-show="board.id">
     <PageHeader/>
     <div class="page-body">
       <div class="board-wrapper">
@@ -30,7 +30,7 @@
                   <div class="list-header">{{ cardList.name }}</div>
                   <draggable class="cards" v-model="cardList.cards" @end="onCardDragEnded" :options="{draggable: '.card-item', group: 'cards', ghostClass: 'ghost-card',
                     animation: 0, scrollSensitivity: 100, touchStartThreshold: 20}" v-bind:data-list-id="cardList.id">
-                    <div class="card-item" v-for="card in cardList.cards" v-bind:key="card.id">
+                    <div class="card-item" v-for="card in cardList.cards" v-bind:key="card.id" @click="openCard(card)">
                       <div class="card-title">{{ card.title }}</div>
                     </div>
                     <div class="add-card-form-wrapper" v-if="cardList.cardForm.open">
@@ -62,6 +62,7 @@
       </div>
     </div>
     <AddMemberModal :boardId="board.id" @added="onMemberAdded"/>
+    <CardModal :card="openedCard" :cardList="focusedCardList" :board="board" :members="members"/>
   </div>
 </template>
 
@@ -70,10 +71,12 @@ import draggable from 'vuedraggable'
 import $ from 'jquery'
 import PageHeader from '@/components/PageHeader.vue'
 import AddMemberModal from '@/modals/AddMemberModal.vue'
+import CardModal from '@/modals/CardModal.vue'
 import notify from '@/utils/notify'
 import boardService from '@/services/boards'
 import cardListService from '@/services/card-lists'
 import cardService from '@/services/cards'
+
 export default {
   name: 'BoardPage',
   data () {
@@ -85,70 +88,129 @@ export default {
       addListForm: {
         open: false,
         name: ''
-      }
+      },
+      openedCard: {}
+    }
+  },
+  computed: {
+    focusedCardList () {
+      return this.cardLists.filter(cardList => cardList.id === this.openedCard.cardListId)[0] || {}
     }
   },
   components: {
     PageHeader,
     AddMemberModal,
+    CardModal,
     draggable
   },
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.loadBoard()
-    })
-  },
-  beforeRouteUpdate (to, from, next) {
-    next()
-    this.unsubscribeFromRealTimeUpdate()
-    this.loadBoard()
+  watch: {
+    '$route' (to, from) {
+      // Switch from one board to another
+      if (to.name === from.name && to.name === 'board') {
+        this.unsubscribeFromRealTimeUpdate(from.params.boardId)
+        this.loadBoard(to.params.boardId)
+      }
+      // Open a card
+      if (to.name === 'card' && from.name === 'board') {
+        this.loadCard(to.params.cardId).then(() => {
+          this.openCardWindow()
+        })
+      }
+      // Close a card
+      if (to.name === 'board' && from.name === 'card') {
+        this.closeCardWindow()
+        this.openedCard = {}
+      }
+    }
   },
   beforeRouteLeave (to, from, next) {
+    console.log('[BoardPage] Before route leave')
     next()
-    this.unsubscribeFromRealTimeUpdate()
+    this.unsubscribeFromRealTimeUpdate(this.board.id)
   },
   mounted () {
+    console.log('[BoardPage] Mouted')
+    this.loadInitial()
     this.$el.addEventListener('click', this.dismissActiveForms)
+    // Closing card window will change back to board URL
+    $('#cardModal').on('hide.bs.modal', () => {
+      this.$router.push({ name: 'board', params: { boardId: this.board.id } })
+    })
   },
   beforeDestroy () {
     this.$el.removeEventListener('click', this.dismissActiveForms)
   },
   methods: {
-    loadBoard () {
-      console.log('[BoardPage] Loading board')
-      boardService.getBoard(this.$route.params.boardId).then(data => {
-        this.team.name = data.team ? data.team.name : ''
-        this.board.id = data.board.id
-        this.board.personal = data.board.personal
-        this.board.name = data.board.name
-        this.members.splice(0)
-        data.members.forEach(member => {
-          this.members.push({
-            id: member.userId,
-            shortName: member.shortName
-          })
+    loadInitial () {
+      // The board page can be opened through a card URL.
+      if (this.$route.params.cardId) {
+        console.log('[BoardPage] Opened with card URL')
+        this.loadCard(this.$route.params.cardId).then(card => {
+          return this.loadBoard(card.boardId)
+        }).then(() => {
+          this.openCardWindow()
         })
-        this.cardLists.splice(0)
-        data.cardLists.sort((list1, list2) => {
-          return list1.position - list2.position
+      } else {
+        console.log('[BoardPage] Opened with board URL')
+        this.loadBoard(this.$route.params.boardId)
+      }
+    },
+    loadCard (cardId) {
+      return new Promise(resolve => {
+        console.log('[BoardPage] Loading card ' + cardId)
+        cardService.getCard(cardId).then(card => {
+          this.openedCard = card
+          resolve(card)
+        }).catch(error => {
+          notify.error(error.message)
         })
-        data.cardLists.forEach(cardList => {
-          cardList.cards.sort((card1, card2) => {
-            return card1.position - card2.position
+      })
+    },
+    loadBoard (boardId) {
+      return new Promise(resolve => {
+        console.log('[BoardPage] Loading board ' + boardId)
+        boardService.getBoard(boardId).then(data => {
+          this.team.name = data.team ? data.team.name : ''
+          this.board.id = data.board.id
+          this.board.personal = data.board.personal
+          this.board.name = data.board.name
+
+          this.members.splice(0)
+
+          data.members.forEach(member => {
+            this.members.push({
+              id: member.userId,
+              name: member.name,
+              shortName: member.shortName
+            })
           })
-          this.cardLists.push({
-            id: cardList.id,
-            name: cardList.name,
-            cards: cardList.cards,
-            cardForm: {
-              open: false,
-              title: ''
-            }
+
+          this.cardLists.splice(0)
+
+          data.cardLists.sort((list1, list2) => {
+            return list1.position - list2.position
           })
+
+          data.cardLists.forEach(cardList => {
+            cardList.cards.sort((card1, card2) => {
+              return card1.position - card2.position
+            })
+
+            this.cardLists.push({
+              id: cardList.id,
+              name: cardList.name,
+              cards: cardList.cards,
+              cardForm: {
+                open: false,
+                title: ''
+              }
+            })
+          })
+          this.subscribeToRealTimUpdate(data.board.id)
+          resolve()
+        }).catch(error => {
+          notify.error(error.message)
         })
-        this.subscribeToRealTimUpdate()
-      }).catch(error => {
-        notify.error(error.message)
       })
     },
     dismissActiveForms (event) {
@@ -202,12 +264,14 @@ export default {
       if (!cardList.cardForm.title.trim()) {
         return
       }
+
       const card = {
         boardId: this.board.id,
         cardListId: cardList.id,
         title: cardList.cardForm.title,
         position: cardList.cards.length + 1
       }
+
       cardService.add(card).then(savedCard => {
         this.appendCardToList(cardList, savedCard)
         cardList.cardForm.title = ''
@@ -240,17 +304,20 @@ export default {
     },
     onCardListDragEnded (event) {
       console.log('[BoardPage] Card list drag ended', event)
+
       // Get the latest card list order and send it to the back-end
       const positionChanges = {
         boardId: this.board.id,
         cardListPositions: []
       }
+
       this.cardLists.forEach((cardList, index) => {
         positionChanges.cardListPositions.push({
           cardListId: cardList.id,
           position: index + 1
         })
       })
+
       cardListService.changePositions(positionChanges).catch(error => {
         notify.error(error.message)
       })
@@ -264,12 +331,15 @@ export default {
       if (fromListId !== toListId) {
         changedListIds.push(toListId)
       }
+
       const positionChanges = {
         boardId: this.board.id,
         cardPositions: []
       }
+
       changedListIds.forEach(cardListId => {
         const cardList = this.cardLists.filter(cardList => { return cardList.id === parseInt(cardListId) })[0]
+
         cardList.cards.forEach((card, index) => {
           positionChanges.cardPositions.push({
             cardListId: cardListId,
@@ -278,15 +348,16 @@ export default {
           })
         })
       })
+
       cardService.changePositions(positionChanges).catch(error => {
         notify.error(error.message)
       })
     },
-    subscribeToRealTimUpdate () {
-      this.$rt.subscribe('/board/' + this.board.id, this.onRealTimeUpdated)
+    subscribeToRealTimUpdate (boardId) {
+      this.$rt.subscribe('/board/' + boardId, this.onRealTimeUpdated)
     },
-    unsubscribeFromRealTimeUpdate () {
-      this.$rt.unsubscribe('/board/' + this.board.id, this.onRealTimeUpdated)
+    unsubscribeFromRealTimeUpdate (boardId) {
+      this.$rt.unsubscribe('/board/' + boardId, this.onRealTimeUpdated)
     },
     onRealTimeUpdated (update) {
       console.log('[BoardPage] Real time update received', update)
@@ -310,6 +381,18 @@ export default {
           title: card.title
         })
       }
+    },
+    openCard (card) {
+      const titlePart = card.title.toLowerCase().trim().replace(/\s/g, '-')
+      this.$router.push({ name: 'card', params: { cardId: card.id, cardTitle: titlePart } })
+    },
+    openCardWindow () {
+      console.log('[BoardPage] Open card window ' + this.openedCard.id)
+      $('#cardModal').modal('show')
+    },
+    closeCardWindow () {
+      console.log('[BoardPage] Close card window ' + this.openedCard.id)
+      $('#cardModal').modal('hide')
     }
   }
 }
@@ -320,40 +403,47 @@ export default {
   flex-grow: 1;
   position: relative;
   overflow-y: auto;
+
   .board-wrapper {
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
+
     .board {
       height: 100%;
       display: flex;
       flex-direction: column;
+
       .board-header {
         flex: none;
         height: auto;
         overflow: hidden;
         position: relative;
         padding: 8px 4px 8px 8px;
+
         .board-header-divider {
           float: left;
           border-left: 1px solid #ddd;
           height: 16px;
           margin: 8px 10px;
         }
+
         .board-header-item {
           float: left;
           height: 32px;
           line-height: 32px;
           margin: 0 4px 0 0;
         }
+
         .board-name {
           font-size: 18px;
           line-height: 32px;
           padding-left: 4px;
           text-decoration: none;
         }
+
         .board-members {
           .member {
             display: block;
@@ -364,6 +454,7 @@ export default {
             border-radius: 50%;
             background-color: #377ef6;
             position: relative;
+
             span {
               height: 30px;
               line-height: 30px;
@@ -373,10 +464,12 @@ export default {
               color: #fff;
             }
           }
+
           .add-member-toggle {
             margin-left: 5px;
             background-color: #eee;
             cursor: pointer;
+
             svg {
               font-size: 10px;
               position: absolute;
@@ -385,17 +478,21 @@ export default {
               color: #000;
             }
           }
+
           .add-member-toggle:hover {
             background-color: #666;
+
             svg {
               color: #fff;
             }
           }
         }
       }
+
       .board-body {
         position: relative;
         flex-grow: 1;
+
         .list-container {
           position: absolute;
           top: 0;
@@ -407,6 +504,7 @@ export default {
           white-space: nowrap;
           margin-bottom: 6px;
           padding-bottom: 6px;
+
           .list-wrapper {
             width: 272px;
             margin: 0 4px;
@@ -415,6 +513,7 @@ export default {
             display: inline-block;
             vertical-align: top;
             white-space: nowrap;
+
             .list {
               background: #eee;
               border-radius: 3px;
@@ -424,11 +523,13 @@ export default {
               max-height: 100%;
               white-space: normal;
               position: relative;
+
               .list-header {
                 padding: 0.55rem 0.75rem;
                 font-weight: 600;
                 cursor: pointer;
               }
+
               .add-card-button {
                 padding: 8px 10px;
                 color: #888;
@@ -436,14 +537,18 @@ export default {
                 border-bottom-left-radius: 3px;
                 border-bottom-right-radius: 3px;
               }
+
               .add-card-button:hover {
                 background: #dfdfdf;
                 color: #333;
               }
+
               .add-card-form-wrapper {
                 padding: 0 8px 8px;
+
                 .form-group {
                   margin-bottom: 5px;
+
                   textarea {
                     resize: none;
                     padding: 0.3rem 0.5rem;
@@ -451,9 +556,11 @@ export default {
                   }
                 }
               }
+
               .cards {
                 overflow-y: auto;
                 min-height: 1px;
+
                 .card-item {
                   overflow: hidden;
                   background: #fff;
@@ -462,20 +569,33 @@ export default {
                   margin: 0 8px 8px;
                   box-shadow: 0 1px 0 #ccc;
                   cursor: pointer;
+
                   .card-title {
                     margin: 0;
+
+                    a {
+                      color: #333;
+                      text-decoration: none;
+                    }
                   }
                 }
+
+                .card-item:hover {
+                  background: #ddd;
+                }
+
                 .ghost-card {
                   background-color: #ccc !important;
                   color: #ccc !important;
                 }
               }
             }
+
             .ghost-list .list {
               background: #aaa;
             }
           }
+
           .list-wrapper.add-list {
             background: #f4f4f4;
             border-radius: 3px;
@@ -483,19 +603,24 @@ export default {
             height: auto;
             color: #888;
             margin-right: 8px;
+
             .add-list-button {
               padding: 8px 10px;
             }
+
             .add-list-button:hover {
               background: #ddd;
               cursor: pointer;
               border-radius: 3px;
               color: #333;
             }
+
             form {
               padding: 5px;
+
               .form-group {
                 margin-bottom: 5px;
+
                 .form-control {
                   height: calc(1.8rem + 2px);
                   padding: 0.375rem 0.3rem;

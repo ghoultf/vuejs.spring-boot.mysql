@@ -1,6 +1,7 @@
 package com.taskagile.app.config;
 
 import com.taskagile.app.domain.common.security.AccessDeniedHandlerImpl;
+import com.taskagile.app.domain.common.security.ApiRequestAccessDeniedExceptionTranslationFilter;
 import com.taskagile.app.web.apis.authenticate.AuthenticationFilter;
 import com.taskagile.app.web.apis.authenticate.SimpleAuthenticationFailureHandler;
 import com.taskagile.app.web.apis.authenticate.SimpleAuthenticationSuccessHandler;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -28,8 +30,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.exceptionHandling().accessDeniedHandler(accessDeniedHandler()).and().authorizeRequests().antMatchers(PUBLIC)
         .permitAll().anyRequest().authenticated().and()
-        .addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter.class).formLogin().loginPage("/login")
-        .and().logout().logoutUrl("/api/me/logout").logoutSuccessHandler(logoutSuccessHandler()).and().csrf().disable();
+        .addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+        .addFilterAfter(apiRequestExceptionTranslationFilter(), ExceptionTranslationFilter.class).formLogin()
+        .loginPage("/login").and().logout().logoutUrl("/api/me/logout").logoutSuccessHandler(logoutSuccessHandler())
+        .and().csrf().disable();
   }
 
   @Override
@@ -68,5 +72,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   public AccessDeniedHandler accessDeniedHandler() {
     return new AccessDeniedHandlerImpl();
+  }
+
+  public ApiRequestAccessDeniedExceptionTranslationFilter apiRequestExceptionTranslationFilter() {
+    return new ApiRequestAccessDeniedExceptionTranslationFilter();
   }
 }

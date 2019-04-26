@@ -1,6 +1,8 @@
 package com.taskagile.app.domain.model.card;
 
 import com.taskagile.app.domain.common.model.AbstractBaseEntity;
+import com.taskagile.app.domain.model.board.BoardId;
+import com.taskagile.app.domain.model.cardlist.CardList;
 import com.taskagile.app.domain.model.cardlist.CardListId;
 import com.taskagile.app.domain.model.user.UserId;
 
@@ -17,6 +19,9 @@ public class Card extends AbstractBaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Column(name = "board_id")
+  private long boardId;
 
   @Column(name = "card_list_id")
   private long cardListId;
@@ -40,9 +45,10 @@ public class Card extends AbstractBaseEntity {
   @Column(name = "created_date", nullable = false)
   private Date createdDate;
 
-  public static Card create(CardListId cardListId, UserId userId, String title, int position) {
+  public static Card create(CardList cardList, UserId userId, String title, int position) {
     Card card = new Card();
-    card.cardListId = cardListId.value();
+    card.boardId = cardList.getBoardId().value();
+    card.cardListId = cardList.getId().value();
     card.userId = userId.value();
     card.title = title;
     card.description = "";
@@ -52,8 +58,20 @@ public class Card extends AbstractBaseEntity {
     return card;
   }
 
+  public void changeTitle(String title) {
+    this.title = title;
+  }
+
+  public void changeDescription(String description) {
+    this.description = description;
+  }
+
   public CardId getId() {
     return new CardId(id);
+  }
+
+  public BoardId getBoardId() {
+    return new BoardId(boardId);
   }
 
   public CardListId getCardListId() {
@@ -102,8 +120,8 @@ public class Card extends AbstractBaseEntity {
 
   @Override
   public String toString() {
-    return "Card{" + "id=" + id + ", cardListId=" + cardListId + ", userId=" + userId + ", title='" + title + '\''
-        + ", description='" + description + '\'' + ", position=" + position + ", archived=" + archived
-        + ", createdDate=" + createdDate + '}';
+    return "Card{" + "id=" + id + ", boardId=" + boardId + ", cardListId=" + cardListId + ", userId=" + userId
+        + ", title='" + title + '\'' + ", description='" + description + '\'' + ", position=" + position + ", archived="
+        + archived + ", createdDate=" + createdDate + '}';
   }
 }
